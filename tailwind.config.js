@@ -16,39 +16,20 @@ module.exports = {
       },
     },
     extend: {
-      colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+      colors: {       
+        navbar: "rgb(var(--navbar) / <alpha-value>)",
+        text: "rgb(var(--text) / <alpha-value>)",
+        border: "rgb(var(--border) / <alpha-value>)",
+        background: "rgb(var(--background) / <alpha-value>)",
+        backgroundBorder: "rgb(var(--background-border) / <alpha-value>)",
+        input: "rgb(var(--input) / <alpha-value>)",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "rgb(var(--primary) / <alpha-value>)",
+          background: "rgb(var(--primary-background) / <alpha-value>)",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          odd: "rgb(var(--card-odd) / <alpha-value>)",
+          even: "rgb(var(--card-even) / <alpha-value>)",
         },
       },
       borderRadius: {

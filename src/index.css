@@ -3,63 +3,81 @@
 @tailwind utilities;
 
 @layer base {
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
- 
-    --primary: 210, 17%, 35%;
-    --primary-foreground: 211, 17%, 24%;
- 
-    --secondary: 36, 37%, 57%;
+  :root {
+    --border: 186 181 186;
+    --text: 186 181 186;
+    --input: 186 181 186;
+    --background: 45 41 46;
+    --background-border: transparent;
 
-    --text: 36, 100%, 57%;
+    --primary: 29 27 29;
+    --primary-background: 29 27 29;
+
+    --card-odd: ;
+    --card-even: ;
+    --navbar: 29 27 29;
   }
 }
+
+/* @layer base {
+  :root {
+    --background-border: 25 25 29;
+    --border: 41 40 49;
+    --text: 255 255 255;
+    --background: 46 45 52;
+    --input: 18 16 16;
+    --input-border: 18 16 16;
+
+    --primary: transparent;
+    --primary-background: 33 32 42;
+
+    --card-odd: transparent;
+    --card-even: transparent;
+    --card-input: 46 68 91;
+
+    --navbar: 33 32 42;
+  }
+} */
 
 @media (prefers-color-scheme: dark) {
   @layer base {
     .dark {
-      --background: 222.2 84% 4.9%;
-      --foreground: 210 40% 98%;
-   
-      --primary: 210, 17%, 35%;
-      --primary-foreground: 211, 17%, 24%;
-   
-      --secondary: 36, 37%, 57%;
+      --border: 186 181 186;
+      --text: 186 181 186;
+      --input: 186 181 186;
+      --background: 45 41 46;
+      --background-border: transparent;
   
-      --text: 36, 100%, 57%;
-    }
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  @layer base {
-    .light {
-      --background: 222.2 84% 4.9%;
-      --foreground: 210 40% 98%;
-   
-      --primary: 210, 17%, 35%;
-      --primary-foreground: 211, 17%, 24%;
-   
-      --secondary: 36, 37%, 57%;
+      --primary: 29 27 29;
+      --primary-background: 29 27 29;
   
-      --text: 36, 100%, 57%;
+      --card-odd: ;
+      --card-even: ;
+      --navbar: 29 27 29;
     }
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button,
   input[type='number'] {
     -webkit-appearance: none;
     margin: 0;
     -moz-appearance: textfield !important;
+  }
+
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #BAB5BA; 
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #A7A0A7; /* Color of the scrollbar handle on hover */
   }
 }

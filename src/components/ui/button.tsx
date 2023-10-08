@@ -19,7 +19,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         navbar:
-          "text-xl text-primary underline-offset-4 hover:underline hover:bg-teal-900",
+          "text-xl text-text underline-offset-4 hover:underline hover:bg-primary-background",
       },
       size: {
         default: "h-10 px-4 py-2",
