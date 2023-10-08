@@ -2,7 +2,7 @@ export default function IngredientPicker() {
   const ingredients = ["Fruits", "Vegetables", "Meats", "Grains"];
 
   return (
-    <div className="flex flex-col bg- w-[400px] h-[600px] rounded-3xl">
+    <div className="flex flex-col bg-primary w-[400px] h-[600px] rounded-3xl">
       <div className="flex p-6 justify-center items-center">
         <input className="p-4 w-96 h-12 rounded-full" />
       </div>
