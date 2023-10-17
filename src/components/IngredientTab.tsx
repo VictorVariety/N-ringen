@@ -38,7 +38,7 @@ export default function IngredientTab(props: Props) {
         <div className="flex h-24 px-6 justify-center items-center bg-primary rounded-t-xl">
           <input
             className="
-            p-4 w-96 h-12 rounded-xl bg-input text-primary text-xl font-medium 
+            p-4 w-96 h-12 rounded-xl bg-input text-primary/70 text-xl font-medium 
             !outline-none placeholder:text-primary/70
             border-[0.5px] border-border"
             placeholder="Search for ingredients.."
@@ -71,7 +71,8 @@ export default function IngredientTab(props: Props) {
                 <div className="flex">
                   <button
                     className="
-                h-8 w-8 pb-1 flex justify-center items-center rounded-full bg-input 
+                h-8 w-8 pb-1 flex justify-center 
+                items-center rounded-full bg-input 
                 text-primary text-2xl font-extrabold
                 hover:bg-text hover:transform duration-150"
                   >

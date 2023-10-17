@@ -1,3 +1,4 @@
+import ChosenMeals from "@/components/ChosenMeals";
 import IngredientTab from "@/components/IngredientTab";
 import MealTab from "@/components/MealTab";
 import { useState } from "react";
@@ -13,6 +14,7 @@ export default function Examples() {
         ) : (
           <MealTab setMainTab={setMainTab} />
         )}
+        <ChosenMeals />
       </div>
     </div>
   );
