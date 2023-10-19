@@ -1,4 +1,6 @@
+import { signOut } from "firebase/auth";
 import { Button } from "./ui/button";
+import { auth } from "@/server/firebaseConfig";
 
 export default function Navbar() {
   return (
@@ -18,6 +20,14 @@ export default function Navbar() {
           List
         </Button>
       </a>
+      <Button
+        variant="navbar"
+        size="navbar"
+        onClick={() => signOut(auth)}
+        className="fixed right-8"
+      >
+        Logout
+      </Button>
     </div>
   );
 }

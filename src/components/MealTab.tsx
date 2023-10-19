@@ -1,7 +1,12 @@
+import { MealData } from "@/lib/types";
+import { db } from "@/server/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 type Props = {
   setMainTab: (tab: string) => void;
+  setSecondTab: (tab: string) => void;
+  addMealForThisDay: (meal: MealData) => void;
 };
 
 export default function MealTab(props: Props) {
@@ -22,27 +27,47 @@ export default function MealTab(props: Props) {
     "Steak and Mashed Potatoes",
     "Shrimp Scampi",
   ];
-  const [meals, setmeals] = useState(meal);
-  const [mealSearch, setmealSearch] = useState("");
+  const [meals, setMeals] = useState<MealData[]>([]);
+  const [mealSearch, setMealSearch] = useState("");
+
+  const mealsCollection = collection(db, "meals");
 
   useEffect(() => {
-    const filteredmeals = meal.filter((item: string) =>
-      item.toLowerCase().startsWith(mealSearch.toLowerCase())
+    //Lager en funksjon her for å kunne bruke async
+    async function fetchMeals() {
+      try {
+        const data = await getDocs(mealsCollection);
+        const filteredData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        })) as MealData[];
+        console.log(filteredData);
+        setMeals(filteredData);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchMeals();
+  }, []);
+
+  useEffect(() => {
+    const filteredmeals = meals.filter((item: MealData) =>
+      item.name.toLowerCase().includes(mealSearch.toLowerCase())
     );
-    setmeals(filteredmeals);
+    setMeals(filteredmeals);
   }, [mealSearch]);
 
   return (
     <div className="p-6 bg-backgroundBorder rounded-xl">
-      <div className="flex flex-col bg-primary-background w-[400px] h-[600px] rounded-xl text-text">
+      <div className="flex flex-col bg-primary-background w-[500px] h-[600px] rounded-xl text-text">
         <div className="flex h-24 px-6 justify-center items-center bg-primary rounded-t-xl">
           <input
             className="
             p-4 w-96 h-12 rounded-xl bg-input text-primary text-xl font-medium 
             !outline-none placeholder:text-primary/70
             border-[0.5px] border-border"
-            placeholder="Search for meals.."
-            onChange={(e) => setmealSearch(e.target.value)}
+            placeholder="Søk etter måltider.."
+            onChange={(e) => setMealSearch(e.target.value)}
           />
         </div>
         <div>
@@ -58,12 +83,12 @@ export default function MealTab(props: Props) {
             } 
             `}
               >
-                <div className="">{meal}</div>
+                <div className="">{meal.name}</div>
                 <div className="flex-grow"></div>
                 <div className="pr-2">
                   <input
                     className="h-7 w-14 rounded-xl text-center bg-input text-primary 
-                  placeholder:text-primary placeholder:text-base !outline-none"
+                    placeholder:text-primary placeholder:text-base !outline-none"
                     type="number"
                     placeholder="gram"
                   />
@@ -71,9 +96,10 @@ export default function MealTab(props: Props) {
                 <div className="flex">
                   <button
                     className="
-                h-8 w-8 pb-1 flex justify-center items-center rounded-full bg-input 
-                text-primary text-2xl font-extrabold
-                hover:bg-text hover:transform duration-150"
+                    h-8 w-8 pb-1 flex justify-center items-center rounded-full bg-input 
+                    text-primary text-2xl font-extrabold
+                    hover:bg-text hover:transform duration-150"
+                    onClick={() => props.addMealForThisDay(meal)}
                   >
                     +
                   </button>
@@ -84,14 +110,22 @@ export default function MealTab(props: Props) {
         </div>
         <div className="flex-grow border-b mx-6"></div>
         <div className="w-full h-16 flex justify-around bg-primary text-xl font-medium rounded-b-xl">
-          <button className="w-full hover:bg-white/5 rounded-bl-xl">
-            New meal
+          <button
+            className="w-full hover:bg-white/5 rounded-bl-xl"
+            onClick={() => {
+              props.setSecondTab("MealCreator");
+              props.setMainTab("Ingredient");
+            }}
+          >
+            Nytt måltid
           </button>
           <button
             className="w-full hover:bg-white/5 rounded-br-xl"
-            onClick={() => props.setMainTab("Ingredient")}
+            onClick={() => {
+              props.setMainTab("Ingredient");
+            }}
           >
-            Ingredient picker
+            Ingredienser
           </button>
         </div>
       </div>

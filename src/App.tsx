@@ -6,21 +6,17 @@ import List from "@/pages/list";
 import Navbar from "@/components/Navbar";
 
 import { collection, getDocs } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import SignIn from "./components/SignIn";
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const analytics = getAnalytics(app);
+import Auth from "./components/Auth";
+import { auth } from "./server/firebaseConfig";
 
 export default function App() {
-  const [user] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <div>
@@ -36,7 +32,7 @@ export default function App() {
           </BrowserRouter>
         </>
       ) : (
-        <SignIn auth={auth} />
+        <Auth />
       )}
     </div>
   );
