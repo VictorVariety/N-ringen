@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 
 type Props = {
   setMainTab: (f: string) => void;
-  addIngredientForMealCreation: (ingredient: IngredientData) => void;
-  addIngredientForThisDay: (ingredient: IngredientData) => void;
+  addIngredientForMealCreation: (
+    ingredient: IngredientData,
+    amount: number
+  ) => void;
+  addIngredientForThisDay: (ingredient: IngredientData, amount: number) => void;
   isCreatingMeal: boolean;
 };
 
@@ -16,6 +19,7 @@ export default function IngredientTab(props: Props) {
     []
   );
   const [ingredientSearch, setIngredientSearch] = useState("");
+  const [amount, setAmount] = useState(100);
 
   useEffect(() => {
     //Lager en funksjon her for å kunne bruke async
@@ -30,7 +34,7 @@ export default function IngredientTab(props: Props) {
       }
     }
     fetchIngredients();
-  }, []);
+  });
 
   useEffect(() => {
     if (isLoading) return;
@@ -39,7 +43,7 @@ export default function IngredientTab(props: Props) {
       item.Matvare.toLowerCase().includes(ingredientSearch.toLowerCase())
     );
     setIngredientResult(filteredIngredients);
-  }, [ingredientSearch]);
+  }, [isLoading, ingredientSearch]);
 
   return (
     <div className="p-6 bg-backgroundBorder rounded-xl">
@@ -60,35 +64,33 @@ export default function IngredientTab(props: Props) {
               {ingredientResult.map((ingredient, index) => (
                 <div
                   key={index}
-                  className={`flex p-1 ml-6 mr-2 items-center text-text text-xl border-border
-            ${
-              index % 2 === 0
-                ? "bg-card-even border-b-[0.5px]"
-                : "bg-card-odd border-b-[0.5px] "
-            } 
-            `}
+                  className="flex p-1 ml-6 mr-2 items-center text-text text-xl border-border"
                 >
                   <div className="">{ingredient.Matvare}</div>
                   <div className="flex-grow"></div>
                   <div className="pr-2">
                     <input
-                      className="h-7 w-14 rounded-xl text-center bg-input text-primary 
-                  placeholder:text-primary placeholder:text-base !outline-none"
+                      className="h-7 w-14 rounded-xl text-center bg-input text-primary placeholder:text-primary placeholder:text-base !outline-none"
                       type="number"
-                      placeholder="100g"
+                      placeholder="100"
+                      onChange={(e) => {
+                        const amount = parseFloat(e.target.value);
+                        setAmount(amount);
+                      }}
                     />
                   </div>
                   <div className="flex">
                     <button
-                      className="
-                h-8 w-8 pb-1 flex justify-center 
-                items-center rounded-full bg-input 
-                text-primary text-2xl font-extrabold
-                hover:bg-text hover:transform duration-150"
+                      className="h-8 w-8 pb-1 flex justify-center items-center rounded-full bg-input text-primary text-2xl font-extrabold hover:bg-text hover:transform duration-150"
                       onClick={
                         props.isCreatingMeal
-                          ? () => props.addIngredientForMealCreation(ingredient)
-                          : () => props.addIngredientForThisDay(ingredient)
+                          ? () =>
+                              props.addIngredientForMealCreation(
+                                ingredient,
+                                amount
+                              )
+                          : () =>
+                              props.addIngredientForThisDay(ingredient, amount)
                       }
                     >
                       +
@@ -99,7 +101,9 @@ export default function IngredientTab(props: Props) {
             </div>
           </div>
         ) : (
-          <div>Laster...</div>
+          <div className="flex items-center justify-center pt-44 text-xl">
+            Laster...
+          </div>
         )}
 
         <div className="flex-grow border-b mx-6"></div>

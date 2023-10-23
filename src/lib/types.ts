@@ -1,3 +1,16 @@
+export type ThisDayContentData = MealData | AddedIngredientData;
+
+export type MealData = {
+  id: string;
+  name: string;
+  ingredients: IngredientData[];
+};
+
+export type AddedIngredientData = {
+  amount: number;
+  ingredientData: IngredientData;
+};
+
 export type IngredientData = {
   Matvare: string;
   SpiseligDel: { value: number; unit: "%" };
@@ -33,12 +46,3 @@ export type IngredientData = {
   Fosfor: { value: number; unit: "mg" };
   Jod: { value: number; unit: "µg" };
 };
-
-export type MealData = {
-  id: string;
-  name: string;
-  ingredients: IngredientData[];
-  cost: number;
-};
-
-export type ThisDayContentData = MealData | IngredientData;

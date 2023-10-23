@@ -1,4 +1,4 @@
-import { IngredientData, MealData, ThisDayContentData } from "@/lib/types";
+import { AddedIngredientData, MealData, ThisDayContentData } from "@/lib/types";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,11 +10,11 @@ type Props = {
   removeMealForThisDay: (index: number) => void;
 };
 
-function isMealData(item: MealData | IngredientData): item is MealData {
+function isMealData(item: MealData | AddedIngredientData): item is MealData {
   return (item as MealData).name !== undefined;
 }
 
-export default function ThisDay(props: Props) {
+export default function ThisDayTab(props: Props) {
   const [date, setDate] = useState(new Date());
   const [thisDayContent, setThisDayContent] = useState<ThisDayContentData[]>(
     []
@@ -73,14 +73,14 @@ export default function ThisDay(props: Props) {
                 ) : (
                   // IngredientData
                   <>
-                    <div>{item.Matvare}</div>
+                    <div>{item.ingredientData.Matvare}</div>
                     <div className="flex-grow"></div>
                     <div className="pr-2">
                       <input
                         className="
                           h-7 w-14 rounded-xl text-center bg-input text-base text-primary 
                           placeholder:text-primary !outline-none"
-                        placeholder="g/mL"
+                        value={item.amount}
                       />
                     </div>
                     <div className="flex">

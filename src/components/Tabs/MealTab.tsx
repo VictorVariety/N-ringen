@@ -10,23 +10,6 @@ type Props = {
 };
 
 export default function MealTab(props: Props) {
-  const meal = [
-    "Spaghetti Bolognese",
-    "Chicken Stir-Fry",
-    "Pizza Margherita",
-    "Salmon with Lemon Butter",
-    "Taco Tuesday",
-    "Veggie Burger",
-    "Omelette",
-    "Caesar Salad",
-    "Beef Tacos",
-    "Pancakes",
-    "Caprese Sandwich",
-    "Sushi Rolls",
-    "Creamy Mushroom Risotto",
-    "Steak and Mashed Potatoes",
-    "Shrimp Scampi",
-  ];
   const [meals, setMeals] = useState<MealData[]>([]);
   const [mealSearch, setMealSearch] = useState("");
 
@@ -75,23 +58,19 @@ export default function MealTab(props: Props) {
             {meals.map((meal, index) => (
               <div
                 key={index}
-                className={`flex p-1 ml-6 mr-2 items-center text-text text-xl border-border
-            ${
-              index % 2 === 0
-                ? "bg-card-even border-b-[0.5px]"
-                : "bg-card-odd border-b-[0.5px] "
-            } 
-            `}
+                className="flex p-1 ml-6 mr-2 items-center text-text text-xl border-border"
               >
                 <div className="">{meal.name}</div>
                 <div className="flex-grow"></div>
                 <div className="pr-2">
-                  <input
-                    className="h-7 w-14 rounded-xl text-center bg-input text-primary 
-                    placeholder:text-primary placeholder:text-base !outline-none"
-                    type="number"
+                  <button
+                    className="
+                          h-7 w-14 rounded-xl text-center bg-input text-base text-primary 
+                          hover:bg-input/70 transition-background-color duration-300"
                     placeholder="gram"
-                  />
+                  >
+                    Tilpass
+                  </button>
                 </div>
                 <div className="flex">
                   <button
