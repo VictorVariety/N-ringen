@@ -67,7 +67,11 @@
     -moz-appearance: textfield !important;
   }
 
-  
+  ::selection {
+    background-color: transparent; /* Replace with your desired background color */
+    color: #fff; /* Text color for readability */
+  }
+
   ::-webkit-scrollbar {
     width: 8px;
   }

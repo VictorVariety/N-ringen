@@ -1,43 +1,87 @@
-import { AddedIngredientData } from "@/lib/types";
-import { db } from "@/server/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
+import { AddedIngredientType } from "@/lib/types";
+import { auth, db } from "@/server/firebaseConfig";
+import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import AmountInput from "./components/AmountInput";
 
 type Props = {
-  selectedIngredients: AddedIngredientData[];
-  setSecondTab: (f: string) => void;
+  selectedIngredients: AddedIngredientType[];
+  setSelectedIngredients: (array: AddedIngredientType[]) => void;
   removeIngredient: (index: number) => void;
-  resetIngredientsForMealCreation: () => void;
+  cancelMealCreation: () => void;
 };
-
-const mealsCollection = collection(db, "meals");
 
 export default function MealCreatorTab(props: Props) {
   const [mealName, setMealName] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [user] = useAuthState(auth);
+  //
 
   async function createAndSaveMeal() {
-    const newMeal = {
-      ingredients: props.selectedIngredients,
-      name: mealName,
-    };
+    if (mealName.length < 3) {
+      setErrorMessage("Minst 3 tegn");
+      return;
+    }
+    if (props.selectedIngredients.length < 1) {
+      setErrorMessage("Ingen ingredienser");
+      return;
+    }
+    setErrorMessage("");
     try {
-      await addDoc(mealsCollection, newMeal);
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        const mealData = {
+          ingredients: props.selectedIngredients,
+          name: mealName,
+        };
+
+        if (docSnap.exists()) {
+          const mealsArray = docSnap.data().meals;
+          mealsArray.push(mealData);
+          await setDoc(docRef, { meals: mealsArray });
+        } else {
+          const newArray = { meals: [mealData] };
+          await setDoc(docRef, newArray);
+        }
+      }
     } catch (error) {
+      setErrorMessage("Noe gikk galt");
       console.error(error);
     }
   }
 
+  function changeIngredientAmount(index: number, newAmount: number | "NaN") {
+    if (index >= 0 && index < props.selectedIngredients.length) {
+      if (newAmount == "NaN") newAmount = 0;
+
+      const updatedIngredients = [...props.selectedIngredients];
+
+      updatedIngredients[index].amount = newAmount;
+
+      props.setSelectedIngredients(updatedIngredients);
+    }
+  }
+
+  //
+
   return (
     <div className="p-6 bg-backgroundBorder rounded-xl">
       <div className="flex flex-col bg-primary-background w-[500px] h-[600px] rounded-xl text-text">
-        <div className="flex h-24 px-6 justify-center items-center bg-primary rounded-t-xl">
+        <div className="flex flex-col h-24 px-6 justify-center items-center bg-primary rounded-t-xl">
           <input
-            className="p-4 w-96 h-12 rounded-xl bg-input text-primary/70 text-xl font-medium !outline-none placeholder:text-primary/70 border-[0.5px] border-border"
+            className="fixed p-4 w-96 h-12 rounded-xl bg-input text-primary/70 text-xl font-medium !outline-none placeholder:text-primary/70 border-[0.5px] border-border"
             placeholder="Gi måltidet et navn.."
+            value={mealName}
             onChange={(e) => {
               setMealName(e.target.value);
             }}
           />
+          <div className="relative top-10 pl-[52px] h-8 w-full">
+            {errorMessage}
+          </div>
         </div>
 
         <div>
@@ -47,14 +91,13 @@ export default function MealCreatorTab(props: Props) {
                 className="flex p-1 ml-6 mr-2 items-center text-text text-xl border-border"
                 key={index}
               >
-                <div className="">{ingredient.ingredientData.Matvare}</div>
+                <div className="">{ingredient.ingredientType.Matvare}</div>
                 <div className="flex-grow"></div>
                 <div className="pr-2">
-                  <input
-                    className="h-7 w-14 rounded-xl text-center bg-input text-primary 
-                    placeholder:text-primary placeholder:text-base !outline-none"
-                    type="number"
-                    placeholder="100g"
+                  <AmountInput
+                    amount={ingredient.amount}
+                    index={index}
+                    changeIngredientAmount={changeIngredientAmount}
                   />
                 </div>
                 <div className="flex">
@@ -84,9 +127,11 @@ export default function MealCreatorTab(props: Props) {
           </button>
           <button
             className="w-full hover:bg-white/5 rounded-br-xl"
-            onClick={() => props.resetIngredientsForMealCreation()}
+            onClick={() => {
+              props.cancelMealCreation();
+            }}
           >
-            Reset
+            Avbryt
           </button>
         </div>
       </div>

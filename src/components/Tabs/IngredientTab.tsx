@@ -1,21 +1,19 @@
-import { IngredientData } from "@/lib/types";
+import { IngredientType } from "@/lib/types";
 import { getIngredients } from "@/server/localbase";
 import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
 
 type Props = {
   setMainTab: (f: string) => void;
-  addIngredientForMealCreation: (
-    ingredient: IngredientData,
-    amount: number
-  ) => void;
-  addIngredientForThisDay: (ingredient: IngredientData, amount: number) => void;
+  addIngredientForMealCreation: (ingredient: IngredientType) => void;
+  addIngredientForThisDay: (ingredient: IngredientType) => void;
   isCreatingMeal: boolean;
 };
 
 export default function IngredientTab(props: Props) {
   const [isLoading, setIsLoading] = useState(true);
-  const [ingredients, setIngredients] = useState<IngredientData[]>([]);
-  const [ingredientResult, setIngredientResult] = useState<IngredientData[]>(
+  const [ingredients, setIngredients] = useState<IngredientType[]>([]);
+  const [ingredientResult, setIngredientResult] = useState<IngredientType[]>(
     []
   );
   const [ingredientSearch, setIngredientSearch] = useState("");
@@ -25,8 +23,8 @@ export default function IngredientTab(props: Props) {
     //Lager en funksjon her for å kunne bruke async
     async function fetchIngredients() {
       try {
-        const data = getIngredients();
-        setIngredients(await data);
+        const Type = getIngredients();
+        setIngredients(await Type);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -39,7 +37,7 @@ export default function IngredientTab(props: Props) {
   useEffect(() => {
     if (isLoading) return;
 
-    const filteredIngredients = ingredients.filter((item: IngredientData) =>
+    const filteredIngredients = ingredients.filter((item: IngredientType) =>
       item.Matvare.toLowerCase().includes(ingredientSearch.toLowerCase())
     );
     setIngredientResult(filteredIngredients);
@@ -58,7 +56,11 @@ export default function IngredientTab(props: Props) {
             onChange={(e) => setIngredientSearch(e.target.value)}
           />
         </div>
-        {!isLoading ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center pt-44 text-xl">
+            Laster...
+          </div>
+        ) : (
           <div>
             <div className="h-[440px] mr-2 overflow-y-auto">
               {ingredientResult.map((ingredient, index) => (
@@ -68,41 +70,24 @@ export default function IngredientTab(props: Props) {
                 >
                   <div className="">{ingredient.Matvare}</div>
                   <div className="flex-grow"></div>
-                  <div className="pr-2">
-                    <input
-                      className="h-7 w-14 rounded-xl text-center bg-input text-primary placeholder:text-primary placeholder:text-base !outline-none"
-                      type="number"
-                      placeholder="100"
-                      onChange={(e) => {
-                        const amount = parseFloat(e.target.value);
-                        setAmount(amount);
-                      }}
-                    />
-                  </div>
+
                   <div className="flex">
                     <button
-                      className="h-8 w-8 pb-1 flex justify-center items-center rounded-full bg-input text-primary text-2xl font-extrabold hover:bg-text hover:transform duration-150"
+                      className="
+                        h-8 w-8 rounded-xl flex items-center justify-center text-input 
+                        hover:bg-input hover:text-primary transition-background-color duration-300"
                       onClick={
                         props.isCreatingMeal
-                          ? () =>
-                              props.addIngredientForMealCreation(
-                                ingredient,
-                                amount
-                              )
-                          : () =>
-                              props.addIngredientForThisDay(ingredient, amount)
+                          ? () => props.addIngredientForMealCreation(ingredient)
+                          : () => props.addIngredientForThisDay(ingredient)
                       }
                     >
-                      +
+                      <FaPlus />
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center pt-44 text-xl">
-            Laster...
           </div>
         )}
 

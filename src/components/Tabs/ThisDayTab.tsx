@@ -1,28 +1,47 @@
-import { AddedIngredientData, MealData, ThisDayContentData } from "@/lib/types";
+import { AddedIngredientType, MealType, ThisDayContentType } from "@/lib/types";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaCog } from "react-icons/fa";
+import { FaX } from "react-icons/fa6";
+import AmountInput from "./components/AmountInput";
 
 type Props = {
-  setSecondTab: (f: string) => void;
-  thisDayContent: ThisDayContentData[];
+  setSecondTab: (tabname: string) => void;
+  thisDayContent: ThisDayContentType[];
+  setContentForThisDay: (array: ThisDayContentType[]) => void;
   removeIngredientForThisDay: (index: number) => void;
   removeMealForThisDay: (index: number) => void;
 };
 
-function isMealData(item: MealData | AddedIngredientData): item is MealData {
-  return (item as MealData).name !== undefined;
-}
-
 export default function ThisDayTab(props: Props) {
   const [date, setDate] = useState(new Date());
-  const [thisDayContent, setThisDayContent] = useState<ThisDayContentData[]>(
-    []
-  );
 
-  useEffect(() => {
-    setThisDayContent(props.thisDayContent);
-  }, [props.thisDayContent]);
+  // useEffect(() => {
+  //   setThisDayContent(props.thisDayContent);
+  // }, [props.thisDayContent]);
+
+  function isMealType(item: MealType | AddedIngredientType): item is MealType {
+    return (item as MealType).name !== undefined;
+  }
+
+  function isAddedIngredientType(item: any): item is AddedIngredientType {
+    return (item as AddedIngredientType).amount !== undefined;
+  }
+
+  function changeIngredientAmount(index: number, newAmount: number | "NaN") {
+    if (index >= 0 && index < props.thisDayContent.length) {
+      const updatedContent = [...props.thisDayContent];
+
+      if (isAddedIngredientType(updatedContent[index])) {
+        let ingredient = updatedContent[index] as AddedIngredientType;
+        if (newAmount == "NaN") newAmount = 0;
+        ingredient.amount = newAmount;
+        updatedContent[index] = ingredient;
+        props.setContentForThisDay(updatedContent);
+      }
+    }
+  }
 
   return (
     <div className="p-6 bg-backgroundBorder rounded-xl">
@@ -38,60 +57,56 @@ export default function ThisDayTab(props: Props) {
         </div>
         <div>
           <div className="h-[440px] mr-2 overflow-y-auto">
-            {thisDayContent.map((item, index) => (
+            {props.thisDayContent.map((item, index) => (
               <div
                 key={index}
                 className="flex p-1 ml-6 mr-2 items-center text-text text-xl border-border"
               >
-                {isMealData(item) ? (
-                  // MealData
+                {isMealType(item) ? (
+                  // MealType
                   <>
                     <div>{item.name}</div>
                     <div className="flex-grow"></div>
                     <div className="pr-2">
                       <button
                         className="
-                          h-7 w-14 rounded-xl text-center bg-input text-base text-primary 
-                          hover:bg-input/70 transition-background-color duration-300"
-                        placeholder="gram"
+                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
+                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
                       >
-                        Tilpass
+                        <FaCog />
                       </button>
                     </div>
                     <div className="flex">
                       <button
                         className="
-                          h-8 w-8 pb-2 flex justify-center items-center rounded-full bg-input 
-                          text-primary text-2xl font-bold
-                          hover:bg-text hover:transform duration-150"
+                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
+                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
                         onClick={() => props.removeMealForThisDay(index)}
                       >
-                        x
+                        <FaX />
                       </button>
                     </div>
                   </>
                 ) : (
-                  // IngredientData
+                  // IngredientType
                   <>
-                    <div>{item.ingredientData.Matvare}</div>
+                    <div>{item.ingredientType.Matvare}</div>
                     <div className="flex-grow"></div>
                     <div className="pr-2">
-                      <input
-                        className="
-                          h-7 w-14 rounded-xl text-center bg-input text-base text-primary 
-                          placeholder:text-primary !outline-none"
-                        value={item.amount}
+                      <AmountInput
+                        amount={item.amount}
+                        index={index}
+                        changeIngredientAmount={changeIngredientAmount}
                       />
                     </div>
                     <div className="flex">
                       <button
                         className="
-                          h-8 w-8 pb-2 flex justify-center items-center rounded-full bg-input 
-                          text-primary text-2xl font-bold
-                          hover:bg-text hover:transform duration-150"
+                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
+                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
                         onClick={() => props.removeIngredientForThisDay(index)}
                       >
-                        x
+                        <FaX />
                       </button>
                     </div>
                   </>
@@ -107,7 +122,7 @@ export default function ThisDayTab(props: Props) {
           </button>
           <button
             className="w-full hover:bg-white/5 rounded-br-xl"
-            onClick={() => console.log(thisDayContent)}
+            onClick={() => console.log(props.thisDayContent)}
           >
             ???
           </button>

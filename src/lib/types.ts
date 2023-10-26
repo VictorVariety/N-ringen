@@ -1,17 +1,17 @@
-export type ThisDayContentData = MealData | AddedIngredientData;
+export type ThisDayContentType = MealType | AddedIngredientType;
 
-export type MealData = {
+export type MealType = {
   id: string;
   name: string;
-  ingredients: IngredientData[];
+  ingredients: AddedIngredientType[];
 };
 
-export type AddedIngredientData = {
+export type AddedIngredientType = {
   amount: number;
-  ingredientData: IngredientData;
+  ingredientType: IngredientType;
 };
 
-export type IngredientData = {
+export type IngredientType = {
   Matvare: string;
   SpiseligDel: { value: number; unit: "%" };
   Kilokalorier: { value: number; unit: "kcal" };

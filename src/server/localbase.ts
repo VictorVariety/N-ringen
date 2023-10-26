@@ -1,4 +1,4 @@
-import { IngredientData } from "@/lib/types";
+import { IngredientType } from "@/lib/types";
 
 export async function getIngredients() {
   try {
@@ -7,7 +7,7 @@ export async function getIngredients() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    const ingredients: IngredientData[] = data;
+    const ingredients: IngredientType[] = data;
 
     return ingredients;
   } catch (error) {

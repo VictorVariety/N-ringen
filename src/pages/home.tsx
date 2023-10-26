@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 import {
-  AddedIngredientData,
-  IngredientData,
-  MealData,
-  ThisDayContentData,
+  AddedIngredientType,
+  IngredientType,
+  MealType,
+  ThisDayContentType,
 } from "@/lib/types";
 
 import ThisDay from "@/components/Tabs/ThisDayTab";
@@ -14,37 +14,34 @@ import MealTab from "@/components/Tabs/MealTab";
 
 export default function Home() {
   const [mainTab, setMainTab] = useState("Ingredient");
-  const [secondTab, setSecondTab] = useState("ChosenMeals");
+  const [secondTab, setSecondTab] = useState("ThisDay");
   const [isCreatingMeal, setIsCreatingMeal] = useState(false);
 
   const [ingredientsForMealCreation, setIngredientsForMealCreation] = useState<
-    AddedIngredientData[]
+    AddedIngredientType[]
   >([]);
   const [contentForThisDay, setContentForThisDay] = useState<
-    ThisDayContentData[]
+    ThisDayContentType[]
   >([]);
 
   useEffect(() => {
-    if (secondTab != "ChosenMeals") setIsCreatingMeal(true);
+    if (secondTab != "ThisDay") setIsCreatingMeal(true);
     else setIsCreatingMeal(false);
-  });
+  }, [secondTab]);
 
-  function addIngredientForMealCreation(
-    ingredient: IngredientData,
-    amount: number
-  ) {
+  function addIngredientForMealCreation(ingredient: IngredientType) {
     const addedIngredient = {
-      amount: amount,
-      ingredientData: ingredient,
+      amount: 100,
+      ingredientType: ingredient,
     };
-    setIngredientsForMealCreation((prevIngredients: AddedIngredientData[]) => [
+    setIngredientsForMealCreation((prevIngredients: AddedIngredientType[]) => [
       ...prevIngredients,
       addedIngredient,
     ]);
   }
 
   function removeIngredientForMealCreation(index: number) {
-    setIngredientsForMealCreation((prevIngredients: AddedIngredientData[]) => {
+    setIngredientsForMealCreation((prevIngredients: AddedIngredientType[]) => {
       const updatedIngredients = [
         ...prevIngredients.slice(0, index),
         ...prevIngredients.slice(index + 1),
@@ -53,23 +50,24 @@ export default function Home() {
     });
   }
 
-  function resetIngredientsForMealCreation() {
+  function cancelMealCreation() {
+    setSecondTab("ThisDay");
     setIngredientsForMealCreation([]);
   }
 
-  function addIngredientForThisDay(ingredient: IngredientData, amount: number) {
+  function addIngredientForThisDay(ingredient: IngredientType) {
     const addedIngredient = {
-      amount: amount,
-      ingredientData: ingredient,
+      amount: 100,
+      ingredientType: ingredient,
     };
-    setContentForThisDay((prevIngredients: ThisDayContentData[]) => [
+    setContentForThisDay((prevIngredients: ThisDayContentType[]) => [
       ...prevIngredients,
       addedIngredient,
     ]);
   }
 
   function removeContentForThisDay(index: number) {
-    setContentForThisDay((prevIngredients: ThisDayContentData[]) => {
+    setContentForThisDay((prevIngredients: ThisDayContentType[]) => {
       const updatedIngredients = [
         ...prevIngredients.slice(0, index),
         ...prevIngredients.slice(index + 1),
@@ -78,8 +76,8 @@ export default function Home() {
     });
   }
 
-  function addMealForThisDay(meal: MealData) {
-    setContentForThisDay((prevMeal: ThisDayContentData[]) => [
+  function addMealForThisDay(meal: MealType) {
+    setContentForThisDay((prevMeal: ThisDayContentType[]) => [
       ...prevMeal,
       meal,
     ]);
@@ -102,19 +100,20 @@ export default function Home() {
             addMealForThisDay={addMealForThisDay}
           />
         )}
-        {secondTab === "ChosenMeals" ? (
+        {secondTab === "ThisDay" ? (
           <ThisDay
             setSecondTab={setSecondTab}
             thisDayContent={contentForThisDay}
+            setContentForThisDay={setContentForThisDay}
             removeIngredientForThisDay={removeContentForThisDay}
             removeMealForThisDay={removeContentForThisDay}
           />
         ) : (
           <MealCreator
-            setSecondTab={setSecondTab}
             selectedIngredients={ingredientsForMealCreation}
+            setSelectedIngredients={setIngredientsForMealCreation}
             removeIngredient={removeIngredientForMealCreation}
-            resetIngredientsForMealCreation={resetIngredientsForMealCreation}
+            cancelMealCreation={cancelMealCreation}
           />
         )}
       </div>

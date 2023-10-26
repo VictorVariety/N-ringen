@@ -5,12 +5,13 @@ import Examples from "@/pages/examples";
 import List from "@/pages/list";
 import Navbar from "@/components/Navbar";
 
-import { collection, getDocs } from "firebase/firestore";
-
 import { useAuthState } from "react-firebase-hooks/auth";
 import Auth from "./components/Auth";
 import { auth } from "./server/firebaseConfig";
 
+export function getUser() {
+  return auth;
+}
 export default function App() {
   const [user, loading] = useAuthState(auth);
 
@@ -36,11 +37,4 @@ export default function App() {
       )}
     </div>
   );
-}
-
-async function getMeals(db: any) {
-  const mealCol = collection(db, "meals");
-  const meals = await getDocs(mealCol);
-  const mealList = meals.docs.map((doc) => doc.data());
-  return mealList;
 }
