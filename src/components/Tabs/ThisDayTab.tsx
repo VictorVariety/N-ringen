@@ -5,21 +5,122 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCog } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import AmountInput from "./components/AmountInput";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "@/server/firebaseConfig";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 type Props = {
   setSecondTab: (tabname: string) => void;
   thisDayContent: ThisDayContentType[];
-  setContentForThisDay: (array: ThisDayContentType[]) => void;
+  setThisDayContent: (array: ThisDayContentType[]) => void;
   removeIngredientForThisDay: (index: number) => void;
   removeMealForThisDay: (index: number) => void;
 };
 
 export default function ThisDayTab(props: Props) {
   const [date, setDate] = useState(new Date());
+  const [formattedDate, setFormattedDate] = useState("");
+  const [user] = useAuthState(auth);
 
-  // useEffect(() => {
-  //   setThisDayContent(props.thisDayContent);
-  // }, [props.thisDayContent]);
+  useEffect(() => {
+    console.log("fetchStart on: " + date);
+    if (formattedDate == "") {
+      console.log("formattedDate is ''");
+      const stringDate = `${date.getDate()} ${date.toLocaleString("en", {
+        month: "short",
+      })} ${date.getFullYear()}`;
+      setFormattedDate(stringDate);
+    }
+    console.log("fetchStart on: " + formattedDate);
+
+    const fetchData = async () => {
+      try {
+        if (user) {
+          console.log("user exists");
+          const docRef = doc(db, "users", user.uid);
+          console.log("2");
+          const userData = (await getDoc(docRef)).data();
+
+          console.log("userData: ");
+          console.log(userData);
+          // Create user entry if undefined
+          if (userData === undefined) {
+            console.log("undefined");
+            const firstTimeUser = { meals: [], history: [] };
+            await setDoc(doc(db, "users", user.uid), firstTimeUser);
+          }
+          if (userData && userData.history) {
+            console.log(userData.history);
+            const indexOfThisDate = userData.history.findIndex(
+              (element: any) => element.date === formattedDate
+            );
+            console.log("formattedDate: " + formattedDate);
+            console.log("indexOfThisDate: " + indexOfThisDate);
+
+            if (
+              userData.history[indexOfThisDate] &&
+              userData.history[indexOfThisDate].thisDayContent
+            ) {
+              const filteredData = userData.history[indexOfThisDate]
+                .thisDayContent as ThisDayContentType[];
+
+              console.log("Downloaded data: ");
+              console.log(filteredData);
+              props.setThisDayContent(filteredData);
+            } else {
+              props.setThisDayContent([]);
+            }
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+      console.log("ThisDayContent: ");
+      console.log(props.thisDayContent);
+    };
+
+    fetchData(); // Call the async function
+  }, [date]);
+
+  async function createOrUpdateHistory() {
+    if (formattedDate == "") return;
+    if (user) {
+      const docRef = doc(db, "users", user.uid);
+      const userData = (await getDoc(docRef)).data();
+
+      if (userData && userData.history && userData.meals) {
+        const indexOfThisDate = userData.history.findIndex(
+          (element: any) => element.date === formattedDate
+        );
+
+        if (indexOfThisDate !== -1) {
+          // If it exists update it
+          userData.history[indexOfThisDate] = {
+            date: formattedDate,
+            thisDayContent: props.thisDayContent,
+          };
+        } else {
+          // If not create it
+          userData.history.push({
+            date: formattedDate,
+            thisDayContent: props.thisDayContent,
+          });
+        }
+
+        const newDataForUpdate = {
+          meals: userData.meals,
+          history: userData.history.filter(
+            (item: any) => item.thisDayContent.length > 0
+          ),
+        };
+        console.log(newDataForUpdate.history);
+        await setDoc(docRef, newDataForUpdate);
+      }
+    }
+  }
+  useEffect(() => {
+    createOrUpdateHistory();
+  }, [props.thisDayContent]);
 
   function isMealType(item: MealType | AddedIngredientType): item is MealType {
     return (item as MealType).name !== undefined;
@@ -38,7 +139,7 @@ export default function ThisDayTab(props: Props) {
         if (newAmount == "NaN") newAmount = 0;
         ingredient.amount = newAmount;
         updatedContent[index] = ingredient;
-        props.setContentForThisDay(updatedContent);
+        props.setThisDayContent(updatedContent);
       }
     }
   }
@@ -50,7 +151,16 @@ export default function ThisDayTab(props: Props) {
           <DatePicker
             selectsStart
             selected={date}
-            onChange={(date: Date) => setDate(date)}
+            onChange={(date: Date) => {
+              setDate(date);
+              const stringDate = `${date.getDate()} ${date.toLocaleString(
+                "en",
+                {
+                  month: "short",
+                }
+              )} ${date.getFullYear()}`;
+              setFormattedDate(stringDate);
+            }}
             dateFormat="dd.MM.yyyy"
             className="rounded-xl bg-input !outline-none text-primary/70 text-xl font-medium text-center"
           />
@@ -81,7 +191,10 @@ export default function ThisDayTab(props: Props) {
                         className="
                         h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
                         text-input hover:bg-input hover:text-primary transition-background-color duration-300"
-                        onClick={() => props.removeMealForThisDay(index)}
+                        onClick={() => {
+                          props.removeMealForThisDay(index);
+                          createOrUpdateHistory();
+                        }}
                       >
                         <FaX />
                       </button>

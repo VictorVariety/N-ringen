@@ -17,7 +17,6 @@ export default function IngredientTab(props: Props) {
     []
   );
   const [ingredientSearch, setIngredientSearch] = useState("");
-  const [amount, setAmount] = useState(100);
 
   useEffect(() => {
     //Lager en funksjon her for å kunne bruke async

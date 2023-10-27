@@ -24,12 +24,10 @@ export default function MealTab(props: Props) {
       try {
         if (user) {
           const docRef = doc(db, "users", user.uid);
-          const userMeals = (await getDoc(docRef)).data();
+          const userData = (await getDoc(docRef)).data();
 
-          if (userMeals && userMeals.meals) {
-            const mealsArray = userMeals.meals;
-
-            const filteredData = userMeals.meals.map(
+          if (userData && userData.meals) {
+            const filteredData = userData.meals.map(
               (element: any, index: number) => ({
                 ...element,
                 id: index,

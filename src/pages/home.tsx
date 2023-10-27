@@ -104,7 +104,7 @@ export default function Home() {
           <ThisDay
             setSecondTab={setSecondTab}
             thisDayContent={contentForThisDay}
-            setContentForThisDay={setContentForThisDay}
+            setThisDayContent={setContentForThisDay}
             removeIngredientForThisDay={removeContentForThisDay}
             removeMealForThisDay={removeContentForThisDay}
           />
