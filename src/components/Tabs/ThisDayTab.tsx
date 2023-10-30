@@ -23,40 +23,28 @@ export default function ThisDayTab(props: Props) {
   const [user] = useAuthState(auth);
 
   useEffect(() => {
-    console.log("fetchStart on: " + date);
     if (formattedDate == "") {
-      console.log("formattedDate is ''");
       const stringDate = `${date.getDate()} ${date.toLocaleString("en", {
         month: "short",
       })} ${date.getFullYear()}`;
       setFormattedDate(stringDate);
     }
-    console.log("fetchStart on: " + formattedDate);
 
     const fetchData = async () => {
       try {
         if (user) {
-          console.log("user exists");
           const docRef = doc(db, "users", user.uid);
-          console.log("2");
           const userData = (await getDoc(docRef)).data();
 
-          console.log("userData: ");
-          console.log(userData);
           // Create user entry if undefined
           if (userData === undefined) {
-            console.log("undefined");
             const firstTimeUser = { meals: [], history: [] };
             await setDoc(doc(db, "users", user.uid), firstTimeUser);
           }
           if (userData && userData.history) {
-            console.log(userData.history);
             const indexOfThisDate = userData.history.findIndex(
               (element: any) => element.date === formattedDate
             );
-            console.log("formattedDate: " + formattedDate);
-            console.log("indexOfThisDate: " + indexOfThisDate);
-
             if (
               userData.history[indexOfThisDate] &&
               userData.history[indexOfThisDate].thisDayContent
@@ -64,8 +52,6 @@ export default function ThisDayTab(props: Props) {
               const filteredData = userData.history[indexOfThisDate]
                 .thisDayContent as ThisDayContentType[];
 
-              console.log("Downloaded data: ");
-              console.log(filteredData);
               props.setThisDayContent(filteredData);
             } else {
               props.setThisDayContent([]);
@@ -75,8 +61,6 @@ export default function ThisDayTab(props: Props) {
       } catch (err) {
         console.log(err);
       }
-      console.log("ThisDayContent: ");
-      console.log(props.thisDayContent);
     };
 
     fetchData(); // Call the async function
@@ -113,7 +97,7 @@ export default function ThisDayTab(props: Props) {
             (item: any) => item.thisDayContent.length > 0
           ),
         };
-        console.log(newDataForUpdate.history);
+
         await setDoc(docRef, newDataForUpdate);
       }
     }
@@ -161,7 +145,7 @@ export default function ThisDayTab(props: Props) {
               )} ${date.getFullYear()}`;
               setFormattedDate(stringDate);
             }}
-            dateFormat="dd.MM.yyyy"
+            dateFormat="dd/MM/yyyy"
             className="rounded-xl bg-input !outline-none text-primary/70 text-xl font-medium text-center"
           />
         </div>

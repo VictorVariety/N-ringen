@@ -41,9 +41,14 @@ export default function MealCreatorTab(props: Props) {
         if (docSnap.exists()) {
           const mealsArray = docSnap.data().meals;
           mealsArray.push(mealData);
-          await setDoc(docRef, { meals: mealsArray });
+
+          if (docSnap.data().history) {
+            const historyArray = docSnap.data().history;
+            await setDoc(docRef, { meals: mealsArray, history: historyArray });
+          } else if (!docSnap.data().history.exists())
+            await setDoc(docRef, { meals: mealsArray, history: [] });
         } else {
-          const newArray = { meals: [mealData] };
+          const newArray = { meals: [mealData], history: [] };
           await setDoc(docRef, newArray);
         }
       }
