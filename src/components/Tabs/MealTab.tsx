@@ -1,49 +1,88 @@
 import { MealType } from "@/lib/types";
 import { auth, db } from "@/server/firebaseConfig";
+import { DocumentData, DocumentReference, setDoc } from "firebase/firestore";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaPlus } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
+import MealDropdown from "./components/MealDropdown";
 
 type Props = {
   setMainTab: (tab: string) => void;
   setSecondTab: (tab: string) => void;
   addMealForThisDay: (meal: MealType) => void;
+  setEditingMealIndex: (index: number | null) => void;
 };
 
 export default function MealTab(props: Props) {
+  const [userDocRef, setUserDocRef] = useState<
+    DocumentReference<DocumentData> | undefined
+  >();
+  const [userData, setUserData] = useState<DocumentData | undefined>();
   const [meals, setMeals] = useState<MealType[]>([]);
+  const [mealsResult, setResultMeals] = useState<MealType[]>([]);
   const [mealSearch, setMealSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [user] = useAuthState(auth);
 
-  useEffect(() => {
-    //Lager en funksjon her for å kunne bruke async
-    async function fetchMeals() {
-      try {
-        if (user) {
-          const docRef = doc(db, "users", user.uid);
-          const userData = (await getDoc(docRef)).data();
+  async function fetchMeals() {
+    try {
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const userData = (await getDoc(docRef)).data() as
+          | DocumentData
+          | undefined;
+        setUserDocRef(docRef);
+        setUserData(userData);
 
-          if (userData && userData.meals) {
-            const filteredData = userData.meals.map(
-              (element: any, index: number) => ({
-                ...element,
-                id: index,
-              })
-            ) as MealType[];
-            setMeals(filteredData);
-          }
+        if (userData && userData.meals) {
+          console.log(userData.meals);
+          const filteredData = userData.meals.map(
+            (element: any, index: number) => ({
+              ...element,
+              id: index,
+            })
+          ) as MealType[];
+          setMeals(filteredData);
+          setResultMeals(filteredData);
         }
-
-        /*  */
-
-        //
-      } catch (err) {
-        console.log(err);
       }
+    } catch (err) {
+      console.log(err);
     }
+  }
+  async function RemoveMeal(index: number) {
+    let newMeals = meals.filter((_, i) => i !== index);
+    console.log(newMeals);
+    if (userData && userData.meals && userData.history && userDocRef) {
+      const updatedUserData = { meals: newMeals, history: userData.history };
+      await setDoc(userDocRef, updatedUserData);
+    }
+    fetchMeals();
+  }
+  async function CloneMeal(index: number) {
+    const meal = meals[index];
+    console.log(meal);
+    if (userData && userData.meals && userData.history && userDocRef) {
+      const updatedMeals = [...userData.meals, meal];
+      console.log(updatedMeals);
+      const updatedUserData = {
+        meals: updatedMeals,
+        history: userData.history,
+      };
+      console.log(updatedUserData);
+      await setDoc(userDocRef, updatedUserData);
+    }
+    fetchMeals();
+  }
+  function EditMeal(index: number) {
+    props.setMainTab("Ingredient");
+    props.setSecondTab("MealCreator");
+    props.setEditingMealIndex(index);
+  }
+
+  useEffect(() => {
     fetchMeals();
     setIsLoading(false);
   }, []);
@@ -52,7 +91,7 @@ export default function MealTab(props: Props) {
     const filteredmeals = meals.filter((item: MealType) =>
       item.name.toLowerCase().includes(mealSearch.toLowerCase())
     );
-    setMeals(filteredmeals);
+    setResultMeals(filteredmeals);
   }, [mealSearch]);
 
   //
@@ -78,7 +117,7 @@ export default function MealTab(props: Props) {
               </div>
             ) : (
               <>
-                {meals.map((meal, index) => (
+                {mealsResult.map((meal, index) => (
                   <div
                     key={index}
                     className="flex p-1 ml-6 mr-2 items-center text-text text-xl border-border"
@@ -86,6 +125,13 @@ export default function MealTab(props: Props) {
                     <div className="">{meal.name}</div>
                     <div className="flex-grow"></div>
                     <div className="pr-2">
+                      <MealDropdown
+                        index={index}
+                        RemoveMeal={RemoveMeal}
+                        CloneMeal={CloneMeal}
+                      />
+                    </div>
+                    {/* <div className="pr-2">
                       <button
                         className="
                         h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
@@ -93,7 +139,7 @@ export default function MealTab(props: Props) {
                       >
                         <GiHamburgerMenu />
                       </button>
-                    </div>
+                    </div> */}
                     <div className="flex">
                       <button
                         className="

@@ -7,6 +7,7 @@ import AmountInput from "./components/AmountInput";
 
 type Props = {
   selectedIngredients: AddedIngredientType[];
+  editingMealIndex: number | null;
   setSelectedIngredients: (array: AddedIngredientType[]) => void;
   removeIngredient: (index: number) => void;
   cancelMealCreation: () => void;
@@ -18,7 +19,7 @@ export default function MealCreatorTab(props: Props) {
   const [user] = useAuthState(auth);
   //
 
-  async function createAndSaveMeal() {
+  async function SaveMeal() {
     if (mealName.length < 3) {
       setErrorMessage("Minst 3 tegn");
       return;
@@ -32,23 +33,31 @@ export default function MealCreatorTab(props: Props) {
       if (user) {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
-
-        const mealData = {
+        const newMeal = {
           ingredients: props.selectedIngredients,
           name: mealName,
         };
 
         if (docSnap.exists()) {
           const mealsArray = docSnap.data().meals;
-          mealsArray.push(mealData);
+
+          if (props.editingMealIndex !== null) {
+            //SAVE EDITED MEAL
+          }
+
+          mealsArray.push(newMeal);
+          console.log(mealsArray);
 
           if (docSnap.data().history) {
             const historyArray = docSnap.data().history;
-            await setDoc(docRef, { meals: mealsArray, history: historyArray });
+            await setDoc(docRef, {
+              meals: mealsArray,
+              history: historyArray,
+            });
           } else if (!docSnap.data().history.exists())
             await setDoc(docRef, { meals: mealsArray, history: [] });
         } else {
-          const newArray = { meals: [mealData], history: [] };
+          const newArray = { meals: [newMeal], history: [] };
           await setDoc(docRef, newArray);
         }
       }
@@ -126,7 +135,7 @@ export default function MealCreatorTab(props: Props) {
         <div className="w-full h-16 flex justify-around bg-primary text-xl font-medium rounded-b-xl">
           <button
             className="w-full hover:bg-white/5 rounded-bl-xl"
-            onClick={() => createAndSaveMeal()}
+            onClick={() => SaveMeal()}
           >
             Lagre
           </button>

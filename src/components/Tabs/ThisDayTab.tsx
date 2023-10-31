@@ -102,6 +102,7 @@ export default function ThisDayTab(props: Props) {
       }
     }
   }
+
   useEffect(() => {
     createOrUpdateHistory();
   }, [props.thisDayContent]);

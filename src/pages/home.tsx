@@ -16,6 +16,8 @@ export default function Home() {
   const [mainTab, setMainTab] = useState("Ingredient");
   const [secondTab, setSecondTab] = useState("ThisDay");
   const [isCreatingMeal, setIsCreatingMeal] = useState(false);
+  const [isEditingMeal, setIsEditingMeal] = useState(false);
+  const [editingMealIndex, setEditingMealIndex] = useState<number | null>(null);
 
   const [ingredientsForMealCreation, setIngredientsForMealCreation] = useState<
     AddedIngredientType[]
@@ -88,8 +90,8 @@ export default function Home() {
       <div className="flex">
         {mainTab === "Ingredient" ? (
           <IngredientTab
-            setMainTab={setMainTab}
             isCreatingMeal={isCreatingMeal}
+            setMainTab={setMainTab}
             addIngredientForThisDay={addIngredientForThisDay}
             addIngredientForMealCreation={addIngredientForMealCreation}
           />
@@ -98,12 +100,13 @@ export default function Home() {
             setMainTab={setMainTab}
             setSecondTab={setSecondTab}
             addMealForThisDay={addMealForThisDay}
+            setEditingMealIndex={setEditingMealIndex}
           />
         )}
         {secondTab === "ThisDay" ? (
           <ThisDay
-            setSecondTab={setSecondTab}
             thisDayContent={contentForThisDay}
+            setSecondTab={setSecondTab}
             setThisDayContent={setContentForThisDay}
             removeIngredientForThisDay={removeContentForThisDay}
             removeMealForThisDay={removeContentForThisDay}
@@ -111,6 +114,7 @@ export default function Home() {
         ) : (
           <MealCreator
             selectedIngredients={ingredientsForMealCreation}
+            editingMealIndex={editingMealIndex}
             setSelectedIngredients={setIngredientsForMealCreation}
             removeIngredient={removeIngredientForMealCreation}
             cancelMealCreation={cancelMealCreation}
