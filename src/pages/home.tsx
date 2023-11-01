@@ -16,8 +16,8 @@ export default function Home() {
   const [mainTab, setMainTab] = useState("Ingredient");
   const [secondTab, setSecondTab] = useState("ThisDay");
   const [isCreatingMeal, setIsCreatingMeal] = useState(false);
-  const [isEditingMeal, setIsEditingMeal] = useState(false);
   const [editingMealIndex, setEditingMealIndex] = useState<number | null>(null);
+  const [mealName, setMealName] = useState("");
 
   const [ingredientsForMealCreation, setIngredientsForMealCreation] = useState<
     AddedIngredientType[]
@@ -101,6 +101,8 @@ export default function Home() {
             setSecondTab={setSecondTab}
             addMealForThisDay={addMealForThisDay}
             setEditingMealIndex={setEditingMealIndex}
+            setMealName={setMealName}
+            setIngredientsForMealCreation={setIngredientsForMealCreation}
           />
         )}
         {secondTab === "ThisDay" ? (
@@ -115,9 +117,13 @@ export default function Home() {
           <MealCreator
             selectedIngredients={ingredientsForMealCreation}
             editingMealIndex={editingMealIndex}
+            mealName={mealName}
+            setMealName={setMealName}
             setSelectedIngredients={setIngredientsForMealCreation}
             removeIngredient={removeIngredientForMealCreation}
             cancelMealCreation={cancelMealCreation}
+            setMainTab={setMainTab}
+            setSecondTab={setSecondTab}
           />
         )}
       </div>

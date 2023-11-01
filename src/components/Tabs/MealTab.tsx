@@ -1,4 +1,4 @@
-import { MealType } from "@/lib/types";
+import { AddedIngredientType, MealType } from "@/lib/types";
 import { auth, db } from "@/server/firebaseConfig";
 import { DocumentData, DocumentReference, setDoc } from "firebase/firestore";
 import { collection, doc, getDoc } from "firebase/firestore";
@@ -13,6 +13,10 @@ type Props = {
   setSecondTab: (tab: string) => void;
   addMealForThisDay: (meal: MealType) => void;
   setEditingMealIndex: (index: number | null) => void;
+  setMealName: (name: string) => void;
+  setIngredientsForMealCreation: (
+    mealIngredients: AddedIngredientType[]
+  ) => void;
 };
 
 export default function MealTab(props: Props) {
@@ -80,6 +84,9 @@ export default function MealTab(props: Props) {
     props.setMainTab("Ingredient");
     props.setSecondTab("MealCreator");
     props.setEditingMealIndex(index);
+
+    props.setMealName(meals[index].name);
+    props.setIngredientsForMealCreation(meals[index].ingredients);
   }
 
   useEffect(() => {
@@ -127,6 +134,7 @@ export default function MealTab(props: Props) {
                     <div className="pr-2">
                       <MealDropdown
                         index={index}
+                        EditMeal={EditMeal}
                         RemoveMeal={RemoveMeal}
                         CloneMeal={CloneMeal}
                       />

@@ -10,16 +10,20 @@ type Props = {
   index: number;
   RemoveMeal: (index: number) => void;
   CloneMeal: (index: number) => void;
+  EditMeal: (index: number) => void;
 };
 
-export default function MealDropdown(props: Props) {
+export default function MealHamburgerDropdown(props: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center justify-center">
         <GiHamburgerMenu />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="fixed right-[-18px] bg-input text-primary">
-        <DropdownMenuItem className="cursor-pointer text-lg">
+        <DropdownMenuItem
+          className="cursor-pointer text-lg"
+          onClick={() => props.EditMeal(props.index)}
+        >
           Endre
         </DropdownMenuItem>
 

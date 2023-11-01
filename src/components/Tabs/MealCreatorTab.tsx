@@ -11,16 +11,19 @@ type Props = {
   setSelectedIngredients: (array: AddedIngredientType[]) => void;
   removeIngredient: (index: number) => void;
   cancelMealCreation: () => void;
+  mealName: string;
+  setMealName: (name: string) => void;
+  setMainTab: (tab: string) => void;
+  setSecondTab: (tab: string) => void;
 };
 
 export default function MealCreatorTab(props: Props) {
-  const [mealName, setMealName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [user] = useAuthState(auth);
   //
 
   async function SaveMeal() {
-    if (mealName.length < 3) {
+    if (props.mealName.length < 3) {
       setErrorMessage("Minst 3 tegn");
       return;
     }
@@ -35,19 +38,17 @@ export default function MealCreatorTab(props: Props) {
         const docSnap = await getDoc(docRef);
         const newMeal = {
           ingredients: props.selectedIngredients,
-          name: mealName,
+          name: props.mealName,
         };
 
         if (docSnap.exists()) {
           const mealsArray = docSnap.data().meals;
 
           if (props.editingMealIndex !== null) {
-            //SAVE EDITED MEAL
+            mealsArray[props.editingMealIndex] = newMeal;
+          } else {
+            mealsArray.push(newMeal);
           }
-
-          mealsArray.push(newMeal);
-          console.log(mealsArray);
-
           if (docSnap.data().history) {
             const historyArray = docSnap.data().history;
             await setDoc(docRef, {
@@ -60,6 +61,8 @@ export default function MealCreatorTab(props: Props) {
           const newArray = { meals: [newMeal], history: [] };
           await setDoc(docRef, newArray);
         }
+        props.setMainTab("MealTab");
+        props.setSecondTab("ThisDay");
       }
     } catch (error) {
       setErrorMessage("Noe gikk galt");
@@ -88,9 +91,9 @@ export default function MealCreatorTab(props: Props) {
           <input
             className="fixed p-4 w-96 h-12 rounded-xl bg-input text-primary/70 text-xl font-medium !outline-none placeholder:text-primary/70 border-[0.5px] border-border"
             placeholder="Gi måltidet et navn.."
-            value={mealName}
+            value={props.mealName}
             onChange={(e) => {
-              setMealName(e.target.value);
+              props.setMealName(e.target.value);
             }}
           />
           <div className="relative top-10 pl-[52px] h-8 w-full">

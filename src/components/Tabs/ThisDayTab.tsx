@@ -29,13 +29,14 @@ export default function ThisDayTab(props: Props) {
       })} ${date.getFullYear()}`;
       setFormattedDate(stringDate);
     }
+  }, [date]);
 
+  useEffect(() => {
     const fetchData = async () => {
       try {
         if (user) {
           const docRef = doc(db, "users", user.uid);
           const userData = (await getDoc(docRef)).data();
-
           // Create user entry if undefined
           if (userData === undefined) {
             const firstTimeUser = { meals: [], history: [] };
@@ -45,13 +46,14 @@ export default function ThisDayTab(props: Props) {
             const indexOfThisDate = userData.history.findIndex(
               (element: any) => element.date === formattedDate
             );
+            console.log("fetchData indexOfThisDate: " + indexOfThisDate);
             if (
               userData.history[indexOfThisDate] &&
               userData.history[indexOfThisDate].thisDayContent
             ) {
+              console.log(4);
               const filteredData = userData.history[indexOfThisDate]
                 .thisDayContent as ThisDayContentType[];
-
               props.setThisDayContent(filteredData);
             } else {
               props.setThisDayContent([]);
@@ -62,10 +64,14 @@ export default function ThisDayTab(props: Props) {
         console.log(err);
       }
     };
+    fetchData();
+  }, [formattedDate]);
 
-    fetchData(); // Call the async function
-  }, [date]);
+  useEffect(() => {
+    createOrUpdateHistory();
+  }, [props.thisDayContent]);
 
+  // Is a function because it is called outside and inside a useEffect
   async function createOrUpdateHistory() {
     if (formattedDate == "") return;
     if (user) {
@@ -77,14 +83,15 @@ export default function ThisDayTab(props: Props) {
           (element: any) => element.date === formattedDate
         );
 
+        // If it exists update it
         if (indexOfThisDate !== -1) {
-          // If it exists update it
           userData.history[indexOfThisDate] = {
             date: formattedDate,
             thisDayContent: props.thisDayContent,
           };
-        } else {
-          // If not create it
+        }
+        // If not create it
+        else {
           userData.history.push({
             date: formattedDate,
             thisDayContent: props.thisDayContent,
@@ -102,10 +109,6 @@ export default function ThisDayTab(props: Props) {
       }
     }
   }
-
-  useEffect(() => {
-    createOrUpdateHistory();
-  }, [props.thisDayContent]);
 
   function isMealType(item: MealType | AddedIngredientType): item is MealType {
     return (item as MealType).name !== undefined;
