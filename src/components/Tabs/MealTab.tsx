@@ -41,7 +41,6 @@ export default function MealTab(props: Props) {
         setUserData(userData);
 
         if (userData && userData.meals) {
-          console.log(userData.meals);
           const filteredData = userData.meals.map(
             (element: any, index: number) => ({
               ...element,
@@ -58,7 +57,7 @@ export default function MealTab(props: Props) {
   }
   async function RemoveMeal(index: number) {
     let newMeals = meals.filter((_, i) => i !== index);
-    console.log(newMeals);
+
     if (userData && userData.meals && userData.history && userDocRef) {
       const updatedUserData = { meals: newMeals, history: userData.history };
       await setDoc(userDocRef, updatedUserData);
@@ -67,15 +66,13 @@ export default function MealTab(props: Props) {
   }
   async function CloneMeal(index: number) {
     const meal = meals[index];
-    console.log(meal);
+
     if (userData && userData.meals && userData.history && userDocRef) {
       const updatedMeals = [...userData.meals, meal];
-      console.log(updatedMeals);
       const updatedUserData = {
         meals: updatedMeals,
         history: userData.history,
       };
-      console.log(updatedUserData);
       await setDoc(userDocRef, updatedUserData);
     }
     fetchMeals();

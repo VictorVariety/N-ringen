@@ -46,12 +46,10 @@ export default function ThisDayTab(props: Props) {
             const indexOfThisDate = userData.history.findIndex(
               (element: any) => element.date === formattedDate
             );
-            console.log("fetchData indexOfThisDate: " + indexOfThisDate);
             if (
               userData.history[indexOfThisDate] &&
               userData.history[indexOfThisDate].thisDayContent
             ) {
-              console.log(4);
               const filteredData = userData.history[indexOfThisDate]
                 .thisDayContent as ThisDayContentType[];
               props.setThisDayContent(filteredData);

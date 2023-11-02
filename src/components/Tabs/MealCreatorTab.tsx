@@ -20,7 +20,6 @@ type Props = {
 export default function MealCreatorTab(props: Props) {
   const [errorMessage, setErrorMessage] = useState("");
   const [user] = useAuthState(auth);
-  //
 
   async function SaveMeal() {
     if (props.mealName.length < 3) {
@@ -40,29 +39,23 @@ export default function MealCreatorTab(props: Props) {
           ingredients: props.selectedIngredients,
           name: props.mealName,
         };
-
+        props.setMealName("");
+        props.setMainTab("Meals");
+        props.setSecondTab("ThisDay");
         if (docSnap.exists()) {
-          const mealsArray = docSnap.data().meals;
+          const allMeals = docSnap.data().meals;
+          const allHistory = docSnap.data().history;
 
           if (props.editingMealIndex !== null) {
-            mealsArray[props.editingMealIndex] = newMeal;
+            allMeals[props.editingMealIndex] = newMeal;
           } else {
-            mealsArray.push(newMeal);
+            allMeals.push(newMeal);
           }
-          if (docSnap.data().history) {
-            const historyArray = docSnap.data().history;
-            await setDoc(docRef, {
-              meals: mealsArray,
-              history: historyArray,
-            });
-          } else if (!docSnap.data().history.exists())
-            await setDoc(docRef, { meals: mealsArray, history: [] });
-        } else {
-          const newArray = { meals: [newMeal], history: [] };
-          await setDoc(docRef, newArray);
+          await setDoc(docRef, {
+            meals: allMeals,
+            history: allHistory,
+          });
         }
-        props.setMainTab("MealTab");
-        props.setSecondTab("ThisDay");
       }
     } catch (error) {
       setErrorMessage("Noe gikk galt");
@@ -81,8 +74,6 @@ export default function MealCreatorTab(props: Props) {
       props.setSelectedIngredients(updatedIngredients);
     }
   }
-
-  //
 
   return (
     <div className="p-6 bg-backgroundBorder rounded-xl">
