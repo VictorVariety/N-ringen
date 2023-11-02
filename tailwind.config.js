@@ -17,20 +17,26 @@ module.exports = {
     },
     extend: {
       colors: {       
-        navbar: "rgb(var(--navbar) / <alpha-value>)",
         text: "rgb(var(--text) / <alpha-value>)",
-        border: "rgb(var(--border) / <alpha-value>)",
-        background: "rgb(var(--background) / <alpha-value>)",
-        backgroundBorder: "rgb(var(--background-border) / <alpha-value>)",
+        button: "rgb(var(--button) / <alpha-value>)",
         input: "rgb(var(--input) / <alpha-value>)",
         primary: {
           DEFAULT: "rgb(var(--primary) / <alpha-value>)",
-          background: "rgb(var(--primary-background) / <alpha-value>)",
+          light: "rgb(var(--primary-light) / <alpha-value>)",
         },
-        card: {
-          odd: "rgb(var(--card-odd) / <alpha-value>)",
-          even: "rgb(var(--card-even) / <alpha-value>)",
+        secondary: {
+          DEFAULT: "rgb(var(--secondary) / <alpha-value>)",
+          light: "rgb(var(--secondary-light) / <alpha-value>)",
         },
+        cardinal: {
+          DEFAULT: "rgb(var(--cardinal) / <alpha-value>)",
+          dark: "rgb(var(--cardinal-dark) / <alpha-value>)",
+        },
+        greenblue: {
+          DEFAULT: "rgb(var(--greenblue) / <alpha-value>)",
+          dark: "rgb(var(--greenblue-dark) / <alpha-value>)",
+        }
+        
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -86,7 +86,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-screen h-[calc(100vh-18px)] bg-background flex justify-center items-center">
+    <div className="w-screen h-[calc(100vh-18px)] bg-secondary flex justify-center items-center">
       <div className="flex">
         {mainTab === "Ingredient" ? (
           <IngredientTab

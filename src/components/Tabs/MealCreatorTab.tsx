@@ -76,12 +76,12 @@ export default function MealCreatorTab(props: Props) {
   }
 
   return (
-    <div className="p-6 bg-backgroundBorder rounded-xl">
-      <div className="flex flex-col bg-primary-background w-[500px] h-[600px] rounded-xl text-text">
+    <div className="p-6">
+      <div className="flex flex-col bg-primary w-[500px] h-[600px] rounded-[8px] text-text">
         <div className="flex flex-col h-24 px-6 justify-center items-center bg-primary rounded-t-xl">
           <input
-            className="fixed p-4 w-96 h-12 rounded-xl bg-input text-primary/70 text-xl font-medium !outline-none placeholder:text-primary/70 border-[0.5px] border-border"
-            placeholder="Gi måltidet et navn.."
+            className="fixed p-4 w-52 h-8 rounded-[5px] bg-input text-primary/70 text-xl font-medium !outline-none placeholder:text-primary/70"
+            placeholder="Gi måltidet et navn"
             value={props.mealName}
             onChange={(e) => {
               props.setMealName(e.target.value);
@@ -128,13 +128,13 @@ export default function MealCreatorTab(props: Props) {
         <div className="flex-grow border-b mx-6"></div>
         <div className="w-full h-16 flex justify-around bg-primary text-xl font-medium rounded-b-xl">
           <button
-            className="w-full hover:bg-white/5 rounded-bl-xl"
+            className="w-full hover:bg-greenblue transition-colors duration-200 rounded-bl-xl"
             onClick={() => SaveMeal()}
           >
             Lagre
           </button>
           <button
-            className="w-full hover:bg-white/5 rounded-br-xl"
+            className="w-full rounded-br-xl hover:bg-cardinal transition-colors duration-200"
             onClick={() => {
               props.cancelMealCreation();
             }}

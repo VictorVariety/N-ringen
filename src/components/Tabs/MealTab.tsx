@@ -101,15 +101,14 @@ export default function MealTab(props: Props) {
   //
 
   return (
-    <div className="p-6 bg-backgroundBorder rounded-xl">
-      <div className="flex flex-col bg-primary-background w-[500px] h-[600px] rounded-xl text-text">
+    <div className="p-6 ">
+      <div className="flex flex-col bg-primary w-[500px] h-[600px] rounded-[8px] text-text">
         <div className="flex h-24 px-6 justify-center items-center bg-primary rounded-t-xl">
           <input
             className="
-            p-4 w-96 h-12 rounded-xl bg-input text-primary text-xl font-medium 
-            !outline-none placeholder:text-primary/70
-            border-[0.5px] border-border"
-            placeholder="Søk etter måltider.."
+            p-4 w-52 h-8 rounded-[5px] bg-input text-primary/70 text-xl font-medium 
+            !outline-none placeholder:text-primary/70"
+            placeholder="Søk etter måltider"
             onChange={(e) => setMealSearch(e.target.value)}
           />
         </div>
@@ -136,20 +135,11 @@ export default function MealTab(props: Props) {
                         CloneMeal={CloneMeal}
                       />
                     </div>
-                    {/* <div className="pr-2">
-                      <button
-                        className="
-                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
-                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
-                      >
-                        <GiHamburgerMenu />
-                      </button>
-                    </div> */}
                     <div className="flex">
                       <button
                         className="
-                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
-                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
+                        h-8 w-8 rounded-xl flex items-center justify-center text-button
+                        hover:text-greenblue transition-color duration-200"
                         onClick={() => props.addMealForThisDay(meal)}
                       >
                         <FaPlus />

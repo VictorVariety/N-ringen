@@ -4,18 +4,21 @@
 
 @layer base {
   :root {
-    --border: 186 181 186;
-    --text: 186 181 186;
-    --input: 186 181 186;
-    --background: 45 41 46;
-    --background-border: transparent;
+    --text: 242 243 245;
+    --button: 181 186 193;
+    --input: 181 186 193;
 
-    --primary: 29 27 29;
-    --primary-background: 29 27 29;
+    --primary: 30 31 34;
+    --primary-light: 43 45 49;
+    --secondary: 49 51 56;
+    --secondary-light: 64 67 73;
 
-    --card-odd: ;
-    --card-even: ;
-    --navbar: 29 27 29;
+    --cardinal: 194 23 60;
+    --cardinal-dark: 125 19 42;
+    --greenblue: 39 107 176;
+    --greenblue-dark: 33 67 101;
+
+
   }
 }
 

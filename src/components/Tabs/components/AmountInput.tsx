@@ -6,10 +6,10 @@ type Props = {
 
 export default function AmountInput(props: Props) {
   return (
-    <div className="flex pr-2 rounded-xl border-[1px] border-input ">
+    <div className="flex pr-2 rounded-[5px] bg-secondary ">
       <input
         className="
-            h-8 w-12 rounded-xl text-center bg-primary text-input font-semibold 
+            h-8 w-12 rounded-xl text-center bg-secondary text-text font-semibold 
             !outline-none"
         type="number"
         value={props.amount}
@@ -23,7 +23,7 @@ export default function AmountInput(props: Props) {
           }
         }}
       />
-      <div className="text-base pt-1">g/ml</div>
+      <div className="text-base pt-[5px]">g/ml</div>
     </div>
   );
 }

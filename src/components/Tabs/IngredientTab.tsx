@@ -43,15 +43,14 @@ export default function IngredientTab(props: Props) {
   }, [isLoading, ingredientSearch]);
 
   return (
-    <div className="p-6 bg-backgroundBorder rounded-xl">
-      <div className="flex flex-col bg-primary-background w-[500px] h-[600px] rounded-xl text-text">
+    <div className="p-6">
+      <div className="flex flex-col bg-primary w-[500px] h-[600px] rounded-[8px] text-text">
         <div className="flex h-24 px-6 justify-center items-center bg-primary rounded-t-xl">
           <input
             className="
-            p-4 w-96 h-12 rounded-xl bg-input text-primary/70 text-xl font-medium 
-            !outline-none placeholder:text-primary/70
-            border-[0.5px] border-border"
-            placeholder="Søk etter matvarer.."
+            p-4 w-52 h-8 rounded-[5px] bg-input text-primary/70 text-xl font-medium 
+            !outline-none placeholder:text-primary/70"
+            placeholder="Søk etter matvarer"
             onChange={(e) => setIngredientSearch(e.target.value)}
           />
         </div>
@@ -73,8 +72,8 @@ export default function IngredientTab(props: Props) {
                   <div className="flex">
                     <button
                       className="
-                        h-8 w-8 rounded-xl flex items-center justify-center text-input 
-                        hover:bg-input hover:text-primary transition-background-color duration-300"
+                        h-8 w-8 rounded-xl flex items-center justify-center text-button
+                        hover:text-greenblue transition-color duration-200"
                       onClick={
                         props.isCreatingMeal
                           ? () => props.addIngredientForMealCreation(ingredient)

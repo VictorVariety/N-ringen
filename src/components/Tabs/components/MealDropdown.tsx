@@ -16,7 +16,7 @@ type Props = {
 export default function MealHamburgerDropdown(props: Props) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center justify-center">
+      <DropdownMenuTrigger className="flex items-center justify-center text-button hover:text-greenblue transition-color duration-200">
         <GiHamburgerMenu />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="fixed right-[-18px] bg-input text-primary">

@@ -131,8 +131,8 @@ export default function ThisDayTab(props: Props) {
   }
 
   return (
-    <div className="p-6 bg-backgroundBorder rounded-xl">
-      <div className="w-[500px] h-[600px] rounded-xl flex flex-col bg-primary-background  text-text">
+    <div className="p-6">
+      <div className="w-[500px] h-[600px] rounded-[8px] flex flex-col bg-primary  text-text">
         <div className="h-24 px-6 rounded-t-xl flex justify-center items-center bg-primary ">
           <DatePicker
             selectsStart
@@ -148,7 +148,7 @@ export default function ThisDayTab(props: Props) {
               setFormattedDate(stringDate);
             }}
             dateFormat="dd/MM/yyyy"
-            className="rounded-xl bg-input !outline-none text-primary/70 text-xl font-medium text-center"
+            className="rounded-[5px] w-32 h-8 bg-input !outline-none text-primary/70 text-xl font-medium text-center hover:cursor-pointer"
           />
         </div>
         <div>
@@ -166,8 +166,8 @@ export default function ThisDayTab(props: Props) {
                     <div className="pr-2">
                       <button
                         className="
-                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
-                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
+                        h-8 w-8 rounded-xl flex items-center justify-center text-button
+                        hover:text-greenblue transition-color duration-200"
                       >
                         <FaCog />
                       </button>
@@ -175,8 +175,8 @@ export default function ThisDayTab(props: Props) {
                     <div className="flex">
                       <button
                         className="
-                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
-                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
+                        h-8 w-8 rounded-xl flex items-center justify-center text-button
+                        hover:text-cardinal transition-color duration-200"
                         onClick={() => {
                           props.removeMealForThisDay(index);
                           createOrUpdateHistory();
@@ -201,8 +201,8 @@ export default function ThisDayTab(props: Props) {
                     <div className="flex">
                       <button
                         className="
-                        h-8 w-8 rounded-xl flex items-center justify-center bg-transparent
-                        text-input hover:bg-input hover:text-primary transition-background-color duration-300"
+                        h-8 w-8 rounded-xl flex items-center justify-center text-button
+                        hover:text-cardinal transition-color duration-200"
                         onClick={() => props.removeIngredientForThisDay(index)}
                       >
                         <FaX />
