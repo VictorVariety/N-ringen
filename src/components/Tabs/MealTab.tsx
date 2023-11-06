@@ -33,7 +33,7 @@ export default function MealTab(props: Props) {
   async function fetchMeals() {
     try {
       if (user) {
-        const docRef = doc(db, "users", user.uid);
+        const docRef = doc(db, "meals", user.uid);
         const userData = (await getDoc(docRef)).data() as
           | DocumentData
           | undefined;
@@ -58,8 +58,8 @@ export default function MealTab(props: Props) {
   async function RemoveMeal(index: number) {
     let newMeals = meals.filter((_, i) => i !== index);
 
-    if (userData && userData.meals && userData.history && userDocRef) {
-      const updatedUserData = { meals: newMeals, history: userData.history };
+    if (userData && userData.meals && userDocRef) {
+      const updatedUserData = { meals: newMeals };
       await setDoc(userDocRef, updatedUserData);
     }
     fetchMeals();
@@ -67,11 +67,10 @@ export default function MealTab(props: Props) {
   async function CloneMeal(index: number) {
     const meal = meals[index];
 
-    if (userData && userData.meals && userData.history && userDocRef) {
+    if (userData && userData.meals && userDocRef) {
       const updatedMeals = [...userData.meals, meal];
       const updatedUserData = {
         meals: updatedMeals,
-        history: userData.history,
       };
       await setDoc(userDocRef, updatedUserData);
     }

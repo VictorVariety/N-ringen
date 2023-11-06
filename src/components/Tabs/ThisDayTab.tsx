@@ -35,12 +35,14 @@ export default function ThisDayTab(props: Props) {
     const fetchData = async () => {
       try {
         if (user) {
-          const docRef = doc(db, "users", user.uid);
+          const docRef = doc(db, "history", user.uid);
           const userData = (await getDoc(docRef)).data();
           // Create user entry if undefined
           if (userData === undefined) {
-            const firstTimeUser = { meals: [], history: [] };
-            await setDoc(doc(db, "users", user.uid), firstTimeUser);
+            const firstTimeMeals = { meals: [] };
+            const firstTimeHistory = { history: [] };
+            await setDoc(doc(db, "meals", user.uid), firstTimeMeals);
+            await setDoc(doc(db, "history", user.uid), firstTimeHistory);
           }
           if (userData && userData.history) {
             const indexOfThisDate = userData.history.findIndex(
@@ -69,14 +71,14 @@ export default function ThisDayTab(props: Props) {
     createOrUpdateHistory();
   }, [props.thisDayContent]);
 
-  // Is a function because it is called outside and inside a useEffect
+  //Needs to be here, cause it's called outside and inside a useEffect
   async function createOrUpdateHistory() {
     if (formattedDate == "") return;
     if (user) {
-      const docRef = doc(db, "users", user.uid);
+      const docRef = doc(db, "history", user.uid);
       const userData = (await getDoc(docRef)).data();
 
-      if (userData && userData.history && userData.meals) {
+      if (userData) {
         const indexOfThisDate = userData.history.findIndex(
           (element: any) => element.date === formattedDate
         );
@@ -97,7 +99,6 @@ export default function ThisDayTab(props: Props) {
         }
 
         const newDataForUpdate = {
-          meals: userData.meals,
           history: userData.history.filter(
             (item: any) => item.thisDayContent.length > 0
           ),

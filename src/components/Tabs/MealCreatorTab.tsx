@@ -33,7 +33,7 @@ export default function MealCreatorTab(props: Props) {
     setErrorMessage("");
     try {
       if (user) {
-        const docRef = doc(db, "users", user.uid);
+        const docRef = doc(db, "meals", user.uid);
         const docSnap = await getDoc(docRef);
         const newMeal = {
           ingredients: props.selectedIngredients,
@@ -44,7 +44,6 @@ export default function MealCreatorTab(props: Props) {
         props.setSecondTab("ThisDay");
         if (docSnap.exists()) {
           const allMeals = docSnap.data().meals;
-          const allHistory = docSnap.data().history;
 
           if (props.editingMealIndex !== null) {
             allMeals[props.editingMealIndex] = newMeal;
@@ -53,7 +52,6 @@ export default function MealCreatorTab(props: Props) {
           }
           await setDoc(docRef, {
             meals: allMeals,
-            history: allHistory,
           });
         }
       }

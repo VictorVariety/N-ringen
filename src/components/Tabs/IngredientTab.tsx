@@ -22,8 +22,8 @@ export default function IngredientTab(props: Props) {
     //Lager en funksjon her for å kunne bruke async
     async function fetchIngredients() {
       try {
-        const Type = getIngredients();
-        setIngredients(await Type);
+        const data = getIngredients();
+        setIngredients(await data);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
