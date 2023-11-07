@@ -7,7 +7,7 @@ import {
   ThisDayContentType,
 } from "@/lib/types";
 
-import ThisDay from "@/components/Tabs/ThisDayTab";
+import ThisDayTab from "@/components/Tabs/ThisDayTab";
 import IngredientTab from "@/components/Tabs/IngredientTab";
 import MealCreator from "@/components/Tabs/MealCreatorTab";
 import MealTab from "@/components/Tabs/MealTab";
@@ -106,7 +106,7 @@ export default function Home() {
           />
         )}
         {secondTab === "ThisDay" ? (
-          <ThisDay
+          <ThisDayTab
             thisDayContent={contentForThisDay}
             setSecondTab={setSecondTab}
             setThisDayContent={setContentForThisDay}

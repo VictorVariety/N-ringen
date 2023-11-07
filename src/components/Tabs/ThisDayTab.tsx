@@ -1,13 +1,13 @@
-import { AddedIngredientType, MealType, ThisDayContentType } from "@/lib/types";
+import { ThisDayContentType } from "@/lib/types";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FaCog } from "react-icons/fa";
-import { FaX } from "react-icons/fa6";
-import AmountInput from "./components/AmountInput";
+
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/server/firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import ThisDayList from "./components/ThisDayList";
+import ThisDayNutrition from "./components/ThisDayNutrition";
 
 type Props = {
   setSecondTab: (tabname: string) => void;
@@ -21,6 +21,7 @@ export default function ThisDayTab(props: Props) {
   const [date, setDate] = useState(new Date());
   const [formattedDate, setFormattedDate] = useState("");
   const [user] = useAuthState(auth);
+  const [showNutrition, setShowNutrition] = useState(false);
 
   useEffect(() => {
     if (formattedDate == "") {
@@ -67,70 +68,6 @@ export default function ThisDayTab(props: Props) {
     fetchData();
   }, [formattedDate]);
 
-  useEffect(() => {
-    createOrUpdateHistory();
-  }, [props.thisDayContent]);
-
-  //Needs to be here, cause it's called outside and inside a useEffect
-  async function createOrUpdateHistory() {
-    if (formattedDate == "") return;
-    if (user) {
-      const docRef = doc(db, "history", user.uid);
-      const userData = (await getDoc(docRef)).data();
-
-      if (userData) {
-        const indexOfThisDate = userData.history.findIndex(
-          (element: any) => element.date === formattedDate
-        );
-
-        // If it exists update it
-        if (indexOfThisDate !== -1) {
-          userData.history[indexOfThisDate] = {
-            date: formattedDate,
-            thisDayContent: props.thisDayContent,
-          };
-        }
-        // If not create it
-        else {
-          userData.history.push({
-            date: formattedDate,
-            thisDayContent: props.thisDayContent,
-          });
-        }
-
-        const newDataForUpdate = {
-          history: userData.history.filter(
-            (item: any) => item.thisDayContent.length > 0
-          ),
-        };
-
-        await setDoc(docRef, newDataForUpdate);
-      }
-    }
-  }
-
-  function isMealType(item: MealType | AddedIngredientType): item is MealType {
-    return (item as MealType).name !== undefined;
-  }
-
-  function isAddedIngredientType(item: any): item is AddedIngredientType {
-    return (item as AddedIngredientType).amount !== undefined;
-  }
-
-  function changeIngredientAmount(index: number, newAmount: number | "NaN") {
-    if (index >= 0 && index < props.thisDayContent.length) {
-      const updatedContent = [...props.thisDayContent];
-
-      if (isAddedIngredientType(updatedContent[index])) {
-        let ingredient = updatedContent[index] as AddedIngredientType;
-        if (newAmount == "NaN") newAmount = 0;
-        ingredient.amount = newAmount;
-        updatedContent[index] = ingredient;
-        props.setThisDayContent(updatedContent);
-      }
-    }
-  }
-
   return (
     <div className="p-6">
       <div className="w-[500px] h-[600px] rounded-[8px] flex flex-col bg-primary  text-text">
@@ -154,71 +91,30 @@ export default function ThisDayTab(props: Props) {
         </div>
         <div>
           <div className="h-[440px] mr-2 overflow-y-auto">
-            {props.thisDayContent.map((item, index) => (
-              <div
-                key={index}
-                className="flex p-1 ml-6 mr-2 items-center text-text text-xl border-border"
-              >
-                {isMealType(item) ? (
-                  // MealType
-                  <>
-                    <div>{item.name}</div>
-                    <div className="flex-grow"></div>
-                    <div className="pr-2">
-                      <button
-                        className="
-                        h-8 w-8 rounded-xl flex items-center justify-center text-button
-                        hover:text-greenblue transition-color duration-200"
-                      >
-                        <FaCog />
-                      </button>
-                    </div>
-                    <div className="flex">
-                      <button
-                        className="
-                        h-8 w-8 rounded-xl flex items-center justify-center text-button
-                        hover:text-cardinal transition-color duration-200"
-                        onClick={() => {
-                          props.removeMealForThisDay(index);
-                          createOrUpdateHistory();
-                        }}
-                      >
-                        <FaX />
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  // IngredientType
-                  <>
-                    <div>{item.ingredientType.Matvare}</div>
-                    <div className="flex-grow"></div>
-                    <div className="pr-2">
-                      <AmountInput
-                        amount={item.amount}
-                        index={index}
-                        changeIngredientAmount={changeIngredientAmount}
-                      />
-                    </div>
-                    <div className="flex">
-                      <button
-                        className="
-                        h-8 w-8 rounded-xl flex items-center justify-center text-button
-                        hover:text-cardinal transition-color duration-200"
-                        onClick={() => props.removeIngredientForThisDay(index)}
-                      >
-                        <FaX />
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
+            {showNutrition ? (
+              <ThisDayNutrition thisDayContent={props.thisDayContent} />
+            ) : (
+              <ThisDayList
+                formattedDate={formattedDate}
+                thisDayContent={props.thisDayContent}
+                setThisDayContent={props.setThisDayContent}
+                removeIngredientForThisDay={props.removeIngredientForThisDay}
+                removeMealForThisDay={props.removeMealForThisDay}
+              />
+            )}
           </div>
         </div>
         <div className="flex-grow border-b mx-6"></div>
         <div className="w-full h-16 flex justify-around bg-primary text-xl font-medium rounded-b-xl">
-          <button className="w-full hover:bg-white/5 rounded-bl-xl">
-            Næringsinnhold
+          <button
+            className="w-full hover:bg-white/5 rounded-bl-xl"
+            onClick={
+              showNutrition
+                ? () => setShowNutrition(false)
+                : () => setShowNutrition(true)
+            }
+          >
+            {showNutrition ? "Matartikkler" : "Næringsinnhold"}
           </button>
           <button
             className="w-full hover:bg-white/5 rounded-br-xl"

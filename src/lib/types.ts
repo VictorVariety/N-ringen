@@ -46,3 +46,9 @@ export type IngredientType = {
   Fosfor: { value: number; unit: "mg" };
   Jod: { value: number; unit: "µg" };
 };
+
+export type NutrientTotal = {
+  name: string;
+  value: number;
+  unit: string;
+};

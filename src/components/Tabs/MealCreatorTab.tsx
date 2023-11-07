@@ -1,6 +1,6 @@
 import { AddedIngredientType } from "@/lib/types";
 import { auth, db } from "@/server/firebaseConfig";
-import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import AmountInput from "./components/AmountInput";
