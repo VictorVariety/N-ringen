@@ -35,7 +35,7 @@ export default function Auth() {
   }
 
   return (
-    <div className="w-screen h-screen relative bg-background flex flex-col justify-center items-center text-xl">
+    <div className="w-screen h-screen relative bg-secondary flex flex-col justify-center items-center text-xl">
       {/* <div className="flex flex-col justify-center items-center">
         <input
           className="bg-input text-primary pl-2 placeholder:text-primary rounded-t-[8px] !outline-none"
@@ -58,7 +58,7 @@ export default function Auth() {
       <div className="text-input flex justify-center items-center">or</div> */}
       <div className="flex justify-center items-center">
         <button
-          className="bg-input text-primary mt-2 px-2 py-1 placeholder:text-primary rounded-[8px] !outline-none"
+          className="bg-greenblue text-text mt-2 px-2 py-1 placeholder:text-primary rounded-[8px] !outline-none"
           onClick={signInWithGoogle}
         >
           Sign in with Google

@@ -3,21 +3,31 @@ import {
   ThisDayContentType,
   NutrientTotal,
   IngredientType,
-} from "@/lib/types",
-import { useEffect, useState } from "react",
-import { isAddedIngredientType, isMealType } from "./ThisDayList",
+} from "@/lib/types";
+import { useEffect, useState } from "react";
+import { isAddedIngredientType, isMealType } from "./ThisDayList";
 
 type Props = {
   thisDayContent: ThisDayContentType[],
-},
+};
 
 export default function ThisDayNutrition(props: Props) {
   const [nutrients, setNutrients] = useState<NutrientTotal[]>([])
 
   useEffect(() => {
 
-    function combineIngredientObjects(ingredientArray: IngredientType[]): { name: string, value: number, unit: string }[] {
+    function combineIngredientObjects(): { name: string, value: number, unit: string }[] {
         const combinedIngredients: { name: string, value: number, unit: string }[] = [];
+        let allIngredients:AddedIngredientType[] = []
+        props.thisDayContent.forEach(item => {
+          if (isMealType(item)){
+            item.ingredients.forEach(ingredient => {
+            allIngredients.push(ingredient)
+            });
+          } else if (isAddedIngredientType(item)){
+            allIngredients.push(item)
+          }
+        });
       
         const initialValues: { [key: string]: number } = {
           Kilokalorier: 0,
@@ -55,11 +65,13 @@ export default function ThisDayNutrition(props: Props) {
       
         const combinedValues: { [key: string]: number } = { ...initialValues };
       
-        ingredientArray.forEach((ingredient) => {
+        allIngredients.forEach((ingredient:AddedIngredientType) => {
           for (const nutrient in initialValues) {
             const nutrientKey = nutrient as keyof IngredientType;
             if(nutrientKey === "Matvare") continue
-            else combinedValues[nutrient] += ingredient[nutrientKey].value;
+            else{
+              combinedValues[nutrient] += ((ingredient.ingredientType[nutrientKey].value * ingredient.amount / 100) * (ingredient.ingredientType["SpiseligDel"].value / 100));
+            }
           }
         });
       
@@ -68,11 +80,11 @@ export default function ThisDayNutrition(props: Props) {
           combinedIngredients.push({
             name: nutrient,
             value: combinedValues[nutrient],
-            unit: ingredientArray.length > 0
+            unit: allIngredients.length > 0
             ? nutrientKey === "Matvare"
               ? "" // Skip this iteration for Matvare
-              : 'unit' in ingredientArray[0][nutrientKey]
-                ? (ingredientArray[0][nutrientKey] as { unit: string }).unit
+              : 'unit' in allIngredients[0].ingredientType[nutrientKey]
+                ? (allIngredients[0].ingredientType[nutrientKey] as { unit: string }).unit
                 : ""
             : ""
           
@@ -80,6 +92,7 @@ export default function ThisDayNutrition(props: Props) {
           
           });
         }
+        combineIngredientObjects()
         console.log(combinedIngredients)
         //TTTTTTTTTTEEEEEEEEEEEEEEEESSSSSSSSSSSTTTTTTTTTTTT
         return combinedIngredients;
