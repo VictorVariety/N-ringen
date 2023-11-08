@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import {
-  AddedIngredientType,
-  IngredientType,
-  MealType,
+  AddedIngredient,
+  Ingredient,
+  Meal,
   ThisDayContentType,
 } from "@/lib/types";
 
@@ -20,7 +20,7 @@ export default function Home() {
   const [mealName, setMealName] = useState("");
 
   const [ingredientsForMealCreation, setIngredientsForMealCreation] = useState<
-    AddedIngredientType[]
+    AddedIngredient[]
   >([]);
   const [contentForThisDay, setContentForThisDay] = useState<
     ThisDayContentType[]
@@ -31,19 +31,42 @@ export default function Home() {
     else setIsCreatingMeal(false);
   }, [secondTab]);
 
-  function addIngredientForMealCreation(ingredient: IngredientType) {
+  // function removeMatvareAndSpiseligDelFromIngredient(
+  //   ingredient: Ingredient
+  // ): Omit<Ingredient, "Matvare" | "SpiseligDel"> {
+  //   const { Matvare, SpiseligDel, ...rest } = ingredient;
+  //   return rest;
+  // }
+
+  function formatToAddedIngredient(ingredient: Ingredient): AddedIngredient {
+    const { Matvare, SpiseligDel, ...rest } = ingredient;
+    console.log("format ingredient");
+    console.log(ingredient.SpiseligDel);
+    console.log("//////////////////////////////");
     const addedIngredient = {
+      name: ingredient.Matvare,
       amount: 100,
-      ingredientType: ingredient,
+      consumablePercentage: ingredient.SpiseligDel,
+      nutrients: rest,
     };
-    setIngredientsForMealCreation((prevIngredients: AddedIngredientType[]) => [
+    console.log("addedIngredient format");
+    console.log(addedIngredient);
+    return addedIngredient;
+  }
+
+  function addIngredientForMealCreation(ingredient: Ingredient) {
+    const addedIngredient = formatToAddedIngredient(ingredient);
+    console.log("add ingredient post conversion");
+    console.log(addedIngredient);
+    console.log("//////////////////////////////////////////");
+    setIngredientsForMealCreation((prevIngredients: AddedIngredient[]) => [
       ...prevIngredients,
       addedIngredient,
     ]);
   }
 
   function removeIngredientForMealCreation(index: number) {
-    setIngredientsForMealCreation((prevIngredients: AddedIngredientType[]) => {
+    setIngredientsForMealCreation((prevIngredients: AddedIngredient[]) => {
       const updatedIngredients = [
         ...prevIngredients.slice(0, index),
         ...prevIngredients.slice(index + 1),
@@ -57,11 +80,9 @@ export default function Home() {
     setIngredientsForMealCreation([]);
   }
 
-  function addIngredientForThisDay(ingredient: IngredientType) {
-    const addedIngredient = {
-      amount: 100,
-      ingredientType: ingredient,
-    };
+  function addIngredientForThisDay(ingredient: Ingredient) {
+    const addedIngredient = formatToAddedIngredient(ingredient);
+
     setContentForThisDay((prevIngredients: ThisDayContentType[]) => [
       ...prevIngredients,
       addedIngredient,
@@ -78,7 +99,7 @@ export default function Home() {
     });
   }
 
-  function addMealForThisDay(meal: MealType) {
+  function addMealForThisDay(meal: Meal) {
     setContentForThisDay((prevMeal: ThisDayContentType[]) => [
       ...prevMeal,
       meal,

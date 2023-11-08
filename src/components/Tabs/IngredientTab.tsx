@@ -1,21 +1,19 @@
-import { IngredientType } from "@/lib/types";
+import { Ingredient } from "@/lib/types";
 import { getIngredients } from "@/server/localbase";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 
 type Props = {
   setMainTab: (f: string) => void;
-  addIngredientForMealCreation: (ingredient: IngredientType) => void;
-  addIngredientForThisDay: (ingredient: IngredientType) => void;
+  addIngredientForMealCreation: (ingredient: Ingredient) => void;
+  addIngredientForThisDay: (ingredient: Ingredient) => void;
   isCreatingMeal: boolean;
 };
 
 export default function IngredientTab(props: Props) {
   const [isLoading, setIsLoading] = useState(true);
-  const [ingredients, setIngredients] = useState<IngredientType[]>([]);
-  const [ingredientResult, setIngredientResult] = useState<IngredientType[]>(
-    []
-  );
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [ingredientResult, setIngredientResult] = useState<Ingredient[]>([]);
   const [ingredientSearch, setIngredientSearch] = useState("");
 
   useEffect(() => {
@@ -36,7 +34,7 @@ export default function IngredientTab(props: Props) {
   useEffect(() => {
     if (isLoading) return;
 
-    const filteredIngredients = ingredients.filter((item: IngredientType) =>
+    const filteredIngredients = ingredients.filter((item: Ingredient) =>
       item.Matvare.toLowerCase().includes(ingredientSearch.toLowerCase())
     );
     setIngredientResult(filteredIngredients);

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import AmountInput from "./AmountInput";
 import { FaX } from "react-icons/fa6";
-import { AddedIngredientType, MealType, ThisDayContentType } from "@/lib/types";
+import { AddedIngredient, Meal, ThisDayContentType } from "@/lib/types";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/server/firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -14,14 +14,14 @@ type Props = {
   removeMealForThisDay: (index: number) => void;
 };
 
-export function isMealType(
-  item: MealType | AddedIngredientType
-): item is MealType {
-  return (item as MealType).name !== undefined;
+export function isMealType(item: ThisDayContentType): item is Meal {
+  return (item as Meal).ingredients !== undefined;
 }
 
-export function isAddedIngredientType(item: any): item is AddedIngredientType {
-  return (item as AddedIngredientType).amount !== undefined;
+export function isAddedIngredientType(
+  item: ThisDayContentType
+): item is AddedIngredient {
+  return (item as AddedIngredient).amount !== undefined;
 }
 
 export default function ThisDayList(props: Props) {
@@ -73,7 +73,7 @@ export default function ThisDayList(props: Props) {
       const updatedContent = [...props.thisDayContent];
 
       if (isAddedIngredientType(updatedContent[index])) {
-        let ingredient = updatedContent[index] as AddedIngredientType;
+        let ingredient = updatedContent[index] as AddedIngredient;
         if (newAmount == "NaN") newAmount = 0;
         ingredient.amount = newAmount;
         updatedContent[index] = ingredient;
@@ -90,7 +90,7 @@ export default function ThisDayList(props: Props) {
           className="flex p-1 ml-6 mr-2 items-center text-text text-xl"
         >
           {isMealType(item) ? (
-            // MealType
+            // Meal
             <>
               <div>{item.name}</div>
               <div className="flex-grow"></div>
@@ -121,7 +121,7 @@ export default function ThisDayList(props: Props) {
           ) : (
             // IngredientType
             <>
-              <div>{item.ingredientType.Matvare}</div>
+              <div>{item.name}</div>
               <div className="flex-grow"></div>
               <div className="pr-2">
                 <AmountInput

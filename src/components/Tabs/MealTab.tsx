@@ -1,9 +1,8 @@
 import { AddedIngredientType, MealType } from "@/lib/types";
 import { auth, db } from "@/server/firebaseConfig";
 import { DocumentData, DocumentReference, setDoc } from "firebase/firestore";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
 import { FaPlus } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
 import MealDropdown from "./components/MealDropdown";

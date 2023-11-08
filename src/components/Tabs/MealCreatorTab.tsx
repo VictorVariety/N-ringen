@@ -1,4 +1,4 @@
-import { AddedIngredientType } from "@/lib/types";
+import { AddedIngredient } from "@/lib/types";
 import { auth, db } from "@/server/firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useState } from "react";
@@ -6,9 +6,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import AmountInput from "./components/AmountInput";
 
 type Props = {
-  selectedIngredients: AddedIngredientType[];
+  selectedIngredients: AddedIngredient[];
   editingMealIndex: number | null;
-  setSelectedIngredients: (array: AddedIngredientType[]) => void;
+  setSelectedIngredients: (array: AddedIngredient[]) => void;
   removeIngredient: (index: number) => void;
   cancelMealCreation: () => void;
   mealName: string;
@@ -40,6 +40,7 @@ export default function MealCreatorTab(props: Props) {
           name: props.mealName,
         };
         props.setMealName("");
+        props.setSelectedIngredients([]);
         props.setMainTab("Meals");
         props.setSecondTab("ThisDay");
         if (docSnap.exists()) {
@@ -97,7 +98,7 @@ export default function MealCreatorTab(props: Props) {
                 className="flex p-1 ml-6 mr-2 items-center text-text text-xl border-border"
                 key={index}
               >
-                <div className="">{ingredient.ingredientType.Matvare}</div>
+                <div className="">{ingredient.name}</div>
                 <div className="flex-grow"></div>
                 <div className="pr-2">
                   <AmountInput
