@@ -6,6 +6,7 @@ import {
 } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { isAddedIngredientType, isMealType } from "./ThisDayList";
+import NutrientProgressBar from "./NutrientProgressBar";
 
 type Props = {
   thisDayContent: ThisDayContentType[];
@@ -14,25 +15,20 @@ type Props = {
 export default function ThisDayNutrition(props: Props) {
   const [nutrients, setNutrients] = useState<NutrientTotalForRecharts[]>([]);
 
+  useEffect(() => {});
+
   useEffect(() => {
     function CombineAndFormatIngredients(): NutrientTotalForRecharts[] {
       let allIngredients: AddedIngredient[] = [];
       props.thisDayContent.forEach((item: ThisDayContentType) => {
         if (isMealType(item)) {
           item.ingredients.forEach((ingredient) => {
-            console.log("ingredient in MealType");
-            console.log(ingredient);
             allIngredients.push(ingredient as AddedIngredient);
           });
         } else if (isAddedIngredientType(item)) {
           allIngredients.push(item as AddedIngredient);
-          console.log("ingredient in AddedIngredient");
-          console.log(item);
         }
       });
-      console.log("allIngredients");
-      console.log(allIngredients);
-      console.log("-------------");
 
       let initialValues: { [key: string]: { value: number; unit: string } } = {
         Kcal: { value: 0, unit: "kcal" },
@@ -47,8 +43,6 @@ export default function ThisDayNutrition(props: Props) {
         VitaminA: { value: 0, unit: "RAE" },
         Retinol: { value: 0, unit: "µg" },
         BetaKaroten: { value: 0, unit: "µg" },
-        VitaminD: { value: 0, unit: "µg" },
-        VitaminE: { value: 0, unit: "alfa-TE" },
         Tiamin: { value: 0, unit: "mg" },
         Riboflavin: { value: 0, unit: "mg" },
         Niacin: { value: 0, unit: "mg" },
@@ -56,8 +50,10 @@ export default function ThisDayNutrition(props: Props) {
         Folat: { value: 0, unit: "µg" },
         VitaminB12: { value: 0, unit: "µg" },
         VitaminC: { value: 0, unit: "mg" },
-        Kalsium: { value: 0, unit: "mg" },
+        VitaminD: { value: 0, unit: "µg" },
+        VitaminE: { value: 0, unit: "alfa-TE" },
         Jern: { value: 0, unit: "mg" },
+        Kalsium: { value: 0, unit: "mg" },
         Natrium: { value: 0, unit: "mg" },
         Kalium: { value: 0, unit: "mg" },
         Magnesium: { value: 0, unit: "mg" },
@@ -69,20 +65,20 @@ export default function ThisDayNutrition(props: Props) {
       };
 
       allIngredients.forEach((ingredient: AddedIngredient) => {
-        // console.log("ingredient");
-        // console.log(ingredient);
-        // console.log("//////////////////////////////////////////");
+        console.log("ingredient");
+        console.log(ingredient);
+        console.log("//////////////////////////////////////////");
         for (let key in ingredient.nutrients) {
-          console.log("key");
           console.log(key);
           console.log("ingredient.nutrients[key as keyof NutrientsOnly]");
           console.log(ingredient.nutrients[key as keyof NutrientsOnly]);
           console.log("//////////////////////////////////////////");
-          initialValues[key].value +=
+          initialValues[key].value += Math.round(
             ((ingredient.nutrients[key as keyof NutrientsOnly] *
               ingredient.amount) /
               100) *
-            (ingredient.consumablePercentage / 100);
+              (ingredient.consumablePercentage / 100)
+          );
         }
       });
 
@@ -102,5 +98,11 @@ export default function ThisDayNutrition(props: Props) {
     setNutrients(CombineAndFormatIngredients());
   }, [props.thisDayContent]);
 
-  return <div></div>;
+  console.log(nutrients[0]);
+
+  return (
+    <>
+      <NutrientProgressBar nutrient={nutrients[0]} />
+    </>
+  );
 }
