@@ -1,24 +1,19 @@
-import { useState } from "react";
 import { auth, googleProvider } from "../server/firebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 
 export default function Auth() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
 
   console.log(auth?.currentUser?.email);
 
-  async function signIn() {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async function signIn() {
+  //   try {
+  //     await createUserWithEmailAndPassword(auth, email, password);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
   async function signInWithGoogle() {
     try {
       await signInWithPopup(auth, googleProvider);
@@ -26,13 +21,13 @@ export default function Auth() {
       console.log(err);
     }
   }
-  async function logOut() {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async function logOut() {
+  //   try {
+  //     await signOut(auth);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   return (
     <div className="w-screen h-screen relative bg-secondary flex flex-col justify-center items-center text-xl">

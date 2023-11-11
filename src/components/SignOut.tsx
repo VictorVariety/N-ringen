@@ -4,7 +4,9 @@ export default function SignOut() {
   const auth = getAuth();
   signOut(auth)
     .then(() => {})
-    .catch((error) => {});
+    .catch((error) => {
+      console.log(error);
+    });
 
   return <button onClick={SignOut}>Sign out</button>;
 }

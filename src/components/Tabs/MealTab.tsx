@@ -1,4 +1,4 @@
-import { AddedIngredientType, MealType } from "@/lib/types";
+import { AddedIngredient, Meal } from "@/lib/types";
 import { auth, db } from "@/server/firebaseConfig";
 import { DocumentData, DocumentReference, setDoc } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
@@ -10,12 +10,10 @@ import MealDropdown from "./components/MealDropdown";
 type Props = {
   setMainTab: (tab: string) => void;
   setSecondTab: (tab: string) => void;
-  addMealForThisDay: (meal: MealType) => void;
+  addMealForThisDay: (meal: Meal) => void;
   setEditingMealIndex: (index: number | null) => void;
   setMealName: (name: string) => void;
-  setIngredientsForMealCreation: (
-    mealIngredients: AddedIngredientType[]
-  ) => void;
+  setIngredientsForMealCreation: (mealIngredients: AddedIngredient[]) => void;
 };
 
 export default function MealTab(props: Props) {
@@ -23,8 +21,8 @@ export default function MealTab(props: Props) {
     DocumentReference<DocumentData> | undefined
   >();
   const [userData, setUserData] = useState<DocumentData | undefined>();
-  const [meals, setMeals] = useState<MealType[]>([]);
-  const [mealsResult, setResultMeals] = useState<MealType[]>([]);
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [mealsResult, setResultMeals] = useState<Meal[]>([]);
   const [mealSearch, setMealSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [user] = useAuthState(auth);
@@ -45,7 +43,7 @@ export default function MealTab(props: Props) {
               ...element,
               id: index,
             })
-          ) as MealType[];
+          ) as Meal[];
           setMeals(filteredData);
           setResultMeals(filteredData);
         }
@@ -90,7 +88,7 @@ export default function MealTab(props: Props) {
   }, []);
 
   useEffect(() => {
-    const filteredmeals = meals.filter((item: MealType) =>
+    const filteredmeals = meals.filter((item: Meal) =>
       item.name.toLowerCase().includes(mealSearch.toLowerCase())
     );
     setResultMeals(filteredmeals);
