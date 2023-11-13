@@ -5,7 +5,7 @@ export const MaleSedentaryRDA = {
   Karbohydrat: 290,
   TilsattSukker: 65,
   Kostfiber: 35,
-  Salt: 6,
+  Salt: 5,
 };
 export const MaleActiveRDA = {
   Kcal: 2900,
@@ -23,7 +23,7 @@ export const MaleEliteRDA = {
   Karbohydrat: 390,
   TilsattSukker: 85,
   Kostfiber: 35,
-  Salt: 6,
+  Salt: 8,
 };
 
 export const MaleOptimalMicroNutrients = {
@@ -111,7 +111,7 @@ export const FemaleSedentaryRDA = {
   Karbohydrat: 235,
   TilsattSukker: 50,
   Kostfiber: 25,
-  Salt: 6,
+  Salt: 5,
 };
 export const FemaleActiveRDA = {
   Kcal: 2350,
@@ -129,7 +129,7 @@ export const FemaleEliteRDA = {
   Karbohydrat: 300,
   TilsattSukker: 65,
   Kostfiber: 25,
-  Salt: 6,
+  Salt: 8,
 };
 export const FemaleOptimalMicroNutrients = {
   Omega3: 2,

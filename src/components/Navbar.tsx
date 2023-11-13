@@ -4,7 +4,7 @@ import { auth } from "@/server/firebaseConfig";
 
 export default function Navbar() {
   return (
-    <div className="fixed top-0 w-screen flex justify-center gap-0 bg-primary text-text">
+    <div className="fixed top-0 w-screen flex justify-center gap-0 text-text">
       <a href="/">
         <Button variant="navbar" size="navbar">
           Home
@@ -15,9 +15,9 @@ export default function Navbar() {
           Examples
         </Button>
       </a>
-      <a href="/list">
+      <a href="/profile">
         <Button variant="navbar" size="navbar">
-          List
+          Profil
         </Button>
       </a>
       <Button

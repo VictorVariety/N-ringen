@@ -82,7 +82,7 @@ export default function ThisDayNutrition(props: Props) {
         }
       });
 
-      const formatForResharp: NutrientTotalForRecharts[] = Object.keys(
+      const formatForRechart: NutrientTotalForRecharts[] = Object.keys(
         initialValues
       ).map((key) => ({
         name: key,
@@ -90,11 +90,12 @@ export default function ThisDayNutrition(props: Props) {
         unit: initialValues[key].unit,
       }));
 
-      console.log("formatForResharp");
-      console.log(formatForResharp);
+      console.log("formatForRechart");
+      console.log(formatForRechart);
       console.log("-------------");
-      return formatForResharp;
+      return formatForRechart;
     }
+    console.log(CombineAndFormatIngredients());
     setNutrients(CombineAndFormatIngredients());
   }, [props.thisDayContent]);
 

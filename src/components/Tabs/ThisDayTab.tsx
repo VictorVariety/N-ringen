@@ -1,4 +1,4 @@
-import { ThisDayContentType } from "@/lib/types";
+import { NutrientsOnly, ThisDayContentType } from "@/lib/types";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -18,10 +18,21 @@ type Props = {
 };
 
 export default function ThisDayTab(props: Props) {
+  const [showNutrition, setShowNutrition] = useState(false);
   const [date, setDate] = useState(new Date());
   const [formattedDate, setFormattedDate] = useState("");
   const [user] = useAuthState(auth);
-  const [showNutrition, setShowNutrition] = useState(false);
+  const [userProfile, setUserProfile] = useState<NutrientsOnly | undefined>();
+
+  async function LoadNutrientProfile() {
+    if (user && userProfile === undefined) {
+      const docRef = doc(db, "users", user.uid);
+      const userData = (await getDoc(docRef)).data() as NutrientsOnly;
+      setUserProfile(userData);
+      console.log(userData);
+    }
+  }
+  LoadNutrientProfile();
 
   useEffect(() => {
     if (formattedDate == "") {
@@ -30,6 +41,7 @@ export default function ThisDayTab(props: Props) {
       })} ${date.getFullYear()}`;
       setFormattedDate(stringDate);
     }
+    console.log(date);
   }, [date]);
 
   useEffect(() => {
@@ -38,6 +50,7 @@ export default function ThisDayTab(props: Props) {
         if (user) {
           const docRef = doc(db, "history", user.uid);
           const userData = (await getDoc(docRef)).data();
+
           // Create user entry if undefined
           if (userData === undefined) {
             const firstTimeMeals = { meals: [] };

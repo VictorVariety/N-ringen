@@ -21,6 +21,7 @@ export default function Auth() {
       console.log(err);
     }
   }
+
   // async function logOut() {
   //   try {
   //     await signOut(auth);
